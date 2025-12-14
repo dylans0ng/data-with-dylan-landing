@@ -18,18 +18,18 @@ const App: React.FC = () => {
   const [emailError, setEmailError] = useState<string>("");
   const [navScrolled, setNavScrolled] = useState(false);
   const [shakeEmail, setShakeEmail] = useState(false);
-  const heroRef = useRef<HTMLElement | null>(null);
+  const heroRef = useRef<HTMLDivElement | null>(null);
   const aboutRef = useRef<HTMLDivElement | null>(null);
   const guidesRef = useRef<HTMLDivElement | null>(null);
   const joinRef = useRef<HTMLDivElement | null>(null);
   const sqlGuideRef = useRef<HTMLDivElement | null>(null);
   const pythonGuideRef = useRef<HTMLDivElement | null>(null);
 
-  const scrollToSection = (ref: React.RefObject<HTMLElement | null>) => {
+  const scrollToSection = (ref: React.RefObject<HTMLDivElement | null>) => {
     ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const sectionRefs = useRef<(HTMLElement | null)[]>([]);
+  const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -53,7 +53,7 @@ const App: React.FC = () => {
     return () => observer.disconnect();
   }, []);
 
-  const setSectionRef = (index: number) => (el: HTMLElement | null) => {
+  const setSectionRef = (index: number) => (el: HTMLDivElement | null) => {
     sectionRefs.current[index] = el;
   };
 
@@ -257,7 +257,7 @@ const App: React.FC = () => {
         <section
           id="hero"
           className="section section-hero hero-fade-in"
-          ref={(el) => {
+          ref={(el: HTMLDivElement | null) => {
             heroRef.current = el;
           }}
         >
@@ -320,7 +320,7 @@ const App: React.FC = () => {
         <section
           id="about"
           className="section reveal-section"
-          ref={(el) => {
+          ref={(el: HTMLDivElement | null) => {
             setSectionRef(0)(el);
             aboutRef.current = el;
           }}
@@ -358,7 +358,7 @@ const App: React.FC = () => {
         <section
           id="guides"
           className="section reveal-section"
-          ref={(el) => {
+          ref={(el: HTMLDivElement | null) => {
             setSectionRef(1)(el);
             guidesRef.current = el;
           }}
@@ -372,7 +372,7 @@ const App: React.FC = () => {
             <div className="cards-grid">
               <article
                 className="resource-card"
-                ref={(el) => {
+                ref={(el: HTMLDivElement | null) => {
                   sqlGuideRef.current = el;
                 }}
               >
@@ -401,7 +401,7 @@ const App: React.FC = () => {
 
               <article
                 className="resource-card"
-                ref={(el) => {
+                ref={(el: HTMLDivElement | null) => {
                   pythonGuideRef.current = el;
                 }}
               >
@@ -435,7 +435,7 @@ const App: React.FC = () => {
         <section
           id="join"
           className="section section-join reveal-section"
-          ref={(el) => {
+          ref={(el: HTMLDivElement | null) => {
             setSectionRef(2)(el);
             joinRef.current = el;
           }}
