@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment variables (makes sure that my API keys aren't pushed to GitHub)
+.env
