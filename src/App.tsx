@@ -68,10 +68,47 @@ const App: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Get environment variables
+  // Get environment variables (Vite client-side envs must use VITE_ prefix)
   const apiKey = import.meta.env.VITE_CONVERTKIT_API_KEY;
   const formId = import.meta.env.VITE_CONVERTKIT_SQL_JOINS_FORM_ID;
-  const sqlTagId = import.meta.env.VITE_CONVERTKIT_SQL_TAG_ID;
+  const rawSqlTagId = import.meta.env.VITE_CONVERTKIT_SQL_TAG_ID;
+  const isDev = import.meta.env.DEV === true;
+
+  // Dev-only logging helpers
+  // Purpose: keep useful diagnostics during development without polluting production logs.
+  // - Info/Warn gate on isDev
+  // - Errors always log (visible in all environments)
+  const logDevInfo = (...args: unknown[]) => { if (isDev) console.info(...args); };
+  const logDevWarn = (...args: unknown[]) => { if (isDev) console.warn(...args); };
+  const logErrorAlways = (...args: unknown[]) => { console.error(...args); };
+
+  // Helper to defensively validate optional SQL tag ID
+  // - Accepts string or number from env
+  // - Returns a number when valid, otherwise null
+  const getValidSqlTagId = (): number | null => {
+    if (rawSqlTagId === undefined || rawSqlTagId === null || rawSqlTagId === "") {
+      return null;
+    }
+    // Convert to number safely
+    const parsed = typeof rawSqlTagId === "number"
+      ? rawSqlTagId
+      : parseInt(String(rawSqlTagId), 10);
+    if (Number.isFinite(parsed) && parsed > 0) {
+      return parsed;
+    }
+    return null;
+  };
+
+  const validatedSqlTagId = getValidSqlTagId();
+
+  // Temporary runtime diagnostics for env wiring
+  useEffect(() => {
+    // Gate diagnostics so they only appear in development
+    logDevInfo("[ConvertKit] apiKey present?", Boolean(apiKey), apiKey ? `len=${apiKey.length}` : "missing");
+    logDevInfo("[ConvertKit] formId present?", Boolean(formId), formId ? `len=${String(formId).length}` : "missing");
+    logDevInfo("[ConvertKit] rawSqlTagId present?", Boolean(rawSqlTagId), rawSqlTagId ? `val=${rawSqlTagId}` : "missing");
+    logDevInfo("[ConvertKit] validatedSqlTagId:", validatedSqlTagId ?? "none");
+  }, [apiKey, formId, rawSqlTagId, validatedSqlTagId]);
 
   // Check if SQL checkbox is selected (only SQL matters for validation)
   const isFormValid = interestSql;
@@ -94,6 +131,8 @@ const App: React.FC = () => {
     
     // Validate environment variables
     if (!apiKey || !formId) {
+      // Errors should always be visible in any environment
+      logErrorAlways("[ConvertKit] Missing env config", { apiKey: Boolean(apiKey), formId: Boolean(formId) });
       setSubmitStatus({
         type: "error",
         message: "Configuration error: Please check your ConvertKit API key and Form ID.",
@@ -136,11 +175,16 @@ const App: React.FC = () => {
         first_name: firstName.trim() || undefined,
       };
 
-      // Apply SQL tag if SQL checkbox is selected and tag ID is configured
-      if (interestSql && sqlTagId) {
-        const tagId = parseInt(sqlTagId, 10);
-        if (!isNaN(tagId)) {
-          requestBody.tags = [tagId];
+      // Apply SQL tag if SQL checkbox is selected AND tag ID is valid.
+      // Otherwise, gracefully rely on ConvertKit automations.
+      if (interestSql) {
+        if (validatedSqlTagId !== null) {
+          requestBody.tags = [validatedSqlTagId];
+          // Dev-mode informational message only
+          logDevWarn("[ConvertKit] Using explicit tag id from env:", validatedSqlTagId);
+        } else {
+          // Dev-mode informational message explaining fallback to automation
+          logDevInfo("[ConvertKit] No valid tag id found. Falling back to automation-only tagging.");
         }
       }
 
