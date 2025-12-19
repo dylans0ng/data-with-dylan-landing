@@ -216,7 +216,7 @@ const App: React.FC = () => {
       if (response.ok && data.subscription) {
         setSubmitStatus({
           type: "success",
-          message: "Success! Check your email for the cheat sheets. 🎉",
+          message: "Success! Check your inbox (or spam) for the cheat sheets. 🎉",
         });
         // Reset form
         setFirstName("");
