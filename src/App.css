@@ -68,3 +68,39 @@
   box-shadow: 0 18px 60px rgba(15, 23, 42, 0.75);
   backdrop-filter: blur(18px);
 }
+
+/* Shared page container for major sections */
+.page-container {
+  width: 100%;
+  max-width: clamp(1200px, 92vw, 1280px);
+  margin: 0 auto;
+  padding-inline: clamp(18px, 6vw, 24px);
+  box-sizing: border-box;
+}
+
+/* Move horizontal padding responsibility from section to container while preserving vertical spacing */
+.section {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+@media (min-width: 769px) {
+  .section {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+/* Ensure Hero uses the shared container for layout */
+.section-hero .page-container {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
+}
+
+@media (min-width: 769px) {
+  .section-hero .page-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+}

@@ -16,6 +16,8 @@
   --radius-xl: 24px;
   --radius-full: 999px;
   --shadow-soft: 0 24px 80px rgba(15, 23, 42, 0.6);
+  /* Section spacing (vertical) — content-driven, not viewport-based */
+  --section-spacing: clamp(56px, 4rem, 96px);
 }
 
 *,
@@ -34,8 +36,9 @@ body {
     "Segoe UI", sans-serif;
   color: var(--text-main);
   background:
-    radial-gradient(circle at 0% 0%, #1d4ed8 0, transparent 45%),
-    radial-gradient(circle at 100% 0%, #7c3aed 0, transparent 45%),
+    /* Older, deeper indigo→violet glow */
+    radial-gradient(circle at 0% 0%, #1e40af 0, transparent 40%),
+    radial-gradient(circle at 100% 0%, #6d28d9 0, transparent 40%),
     radial-gradient(circle at 50% 120%, #0f172a 0, #020617 55%, #000 100%);
   width: 100%;
   overflow-y: auto;
@@ -95,13 +98,19 @@ body {
 
 @media (min-width: 769px) {
   .section {
-    min-height: 100svh;
-    padding: 96px 24px 80px;
+    /* Content-based spacing: avoid tying height to viewport */
+    min-height: auto;
+    padding-top: var(--section-spacing);
+    padding-bottom: var(--section-spacing);
+    /* Horizontal padding handled by .page-container */
+    padding-left: 0;
+    padding-right: 0;
   }
 
   .section-hero {
-    padding-top: 120px;
-    padding-bottom: 80px;
+    /* Slightly elevated spacing under fixed nav */
+    padding-top: calc(var(--section-spacing) + 24px);
+    padding-bottom: var(--section-spacing);
   }
 }
 
@@ -255,20 +264,17 @@ body {
 
 /* Desktop: side-by-side layout */
 @media (min-width: 769px) {
-  .section-hero {
-    flex-direction: row;
-    align-items: flex-start;
-  }
-
+  /* Layout handled by .page-container grid; keep text alignment */
   .hero-content {
-    flex: 1.1;
-    max-width: 640px;
-    padding-right: 24px;
+    text-align: left;
+    align-items: flex-start;
+    padding-right: 0;
+    max-width: none;
   }
 
   .hero-card {
-    flex: 0.9;
-    max-width: 420px;
+    max-width: none;
+    align-self: center;
   }
 }
 
@@ -1249,5 +1255,32 @@ body {
   .nav-cta {
     padding: 6px 8px;
     font-size: 0.72rem;
+  }
+}
+
+/* Desktop-only: standardized vertical spacing across major sections */
+@media (min-width: 1024px) {
+  /* Base desktop section spacing */
+  .section {
+    padding-top: var(--section-spacing);
+    padding-bottom: var(--section-spacing);
+  }
+
+  /* Content-aware height for hero and about */
+  #hero.section,
+  #about.section {
+    min-height: auto;
+  }
+
+  /* Slight extra top padding for hero under fixed nav */
+  .section-hero {
+    padding-top: calc(var(--section-spacing) + 24px);
+    padding-bottom: var(--section-spacing);
+  }
+
+  /* Guardrail: avoid stacking bottom margins with section padding */
+  .section > :last-child,
+  .section-inner > :last-child {
+    margin-bottom: 0;
   }
 }

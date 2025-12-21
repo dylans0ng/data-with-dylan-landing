@@ -305,58 +305,60 @@ const App: React.FC = () => {
             heroRef.current = el;
           }}
         >
-          <div className="hero-content">
-            <p className="eyebrow">🚀 Python · SQL · Data Science</p>
-            <h1 className="hero-title">
-              Jumpstart your
-              <span className="accent"> Data Science Journey</span> for Free.
-            </h1>
-            <p className="hero-subtitle">
-              Get beginner-friendly Python and SQL cheat sheets, visual explainers,
-              and practice problems—designed for busy students and early-career
-              data folks.
-            </p>
+          <div className="page-container">
+            <div className="hero-content">
+              <p className="eyebrow">🚀 Python · SQL · Data Science</p>
+              <h1 className="hero-title">
+                Jumpstart your
+                <span className="accent"> Data Science Journey</span> for Free.
+              </h1>
+              <p className="hero-subtitle">
+                Get beginner-friendly Python and SQL cheat sheets, visual explainers,
+                and practice problems—designed for busy students and early-career
+                data folks.
+              </p>
 
-            <div className="hero-cta-row">
-              <a
-                href="#join"
-                className="btn btn-primary"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection(joinRef);
-                }}
-              >
-                Get the cheat sheets
-              </a>
-              <a
-                href="https://www.youtube.com/@data_with_dylan"
-                target="_blank"
-                rel="noreferrer"
-                className="btn btn-ghost"
-              >
-                Visit the YouTube channel
-              </a>
+              <div className="hero-cta-row">
+                <a
+                  href="#join"
+                  className="btn btn-primary"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToSection(joinRef);
+                  }}
+                >
+                  Get the cheat sheets
+                </a>
+                <a
+                  href="https://www.youtube.com/@data_with_dylan"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn btn-ghost"
+                >
+                  Visit the YouTube channel
+                </a>
+              </div>
+
+              <p className="hero-trust">
+                ✅ Join a community of data learners growing with{" "}
+                <a
+                  href="https://www.youtube.com/@data_with_dylan"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Data with Dylan
+                </a>
+              </p>
             </div>
-
-            <p className="hero-trust">
-              ✅ Join a community of data learners growing with{" "}
-              <a
-                href="https://www.youtube.com/@data_with_dylan"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Data with Dylan
-              </a>
-            </p>
-          </div>
-          <div className="hero-card">
-            <div className="hero-tag">What you’ll get</div>
-            <ul className="hero-list">
-              <li>📌 Step-by-step examples in Python + SQL</li>
-              <li>🧠 Intuition-first explanations (not just formulas)</li>
-              <li>📝 Practice problems with solutions</li>
-              <li>📬 New resources sent straight to your inbox</li>
-            </ul>
+            <div className="hero-card">
+              <div className="hero-tag">What you’ll get</div>
+              <ul className="hero-list">
+                <li>📌 Step-by-step examples in Python + SQL</li>
+                <li>🧠 Intuition-first explanations (not just formulas)</li>
+                <li>📝 Practice problems with solutions</li>
+                <li>📬 New resources sent straight to your inbox</li>
+              </ul>
+            </div>
           </div>
         </section>
 
@@ -369,7 +371,8 @@ const App: React.FC = () => {
             aboutRef.current = el;
           }}
         >
-          <div className="section-inner about-grid">
+          <div className="page-container">
+            <div className="about-grid">
             <div className="about-photo-wrap">
               <img
                 src="/dylan-headshot.jpg"
@@ -395,6 +398,7 @@ const App: React.FC = () => {
                 that will help you apply what you learn throughout your data science journey.
               </p>
             </div>
+            </div>
           </div>
         </section>
 
@@ -407,7 +411,7 @@ const App: React.FC = () => {
             guidesRef.current = el;
           }}
         >
-          <div className="section-inner">
+          <div className="page-container">
             <p className="eyebrow">Free resources</p>
             <h2 className="section-title">
               Choose your starting point (or grab both)
@@ -484,7 +488,8 @@ const App: React.FC = () => {
             joinRef.current = el;
           }}
         >
-          <div className="section-inner join-inner">
+          <div className="page-container">
+            <div className="join-inner">
             <div>
               <p className="eyebrow">Join the newsletter</p>
               <h2 className="section-title">
@@ -607,6 +612,7 @@ const App: React.FC = () => {
                 No spam. Unsubscribe any time with one click.
               </p>
             </form>
+            </div>
           </div>
         </section>
       </main>
