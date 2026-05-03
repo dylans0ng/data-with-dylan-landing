@@ -110,24 +110,21 @@ const App: React.FC = () => {
     logDevInfo("[ConvertKit] validatedSqlTagId:", validatedSqlTagId ?? "none");
   }, [apiKey, formId, rawSqlTagId, validatedSqlTagId]);
 
-  // Check if SQL checkbox is selected (only SQL matters for validation)
-  const isFormValid = interestSql;
+  // At least one topic must be selected for form validity.
+  const isFormValid = interestSql || interestPython;
 
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    // Validate SQL checkbox (only SQL is required)
+    // Validate topic checkboxes
     let hasError = false;
-    if (!interestSql) {
+    if (!interestSql && !interestPython) {
       setCheckboxError("Please select at least one topic you're interested in.");
       hasError = true;
     } else {
       setCheckboxError("");
     }
-    
-    // Clear checkbox error if validation passes
-    setCheckboxError("");
     
     // Validate environment variables
     if (!apiKey || !formId) {
@@ -565,15 +562,20 @@ const App: React.FC = () => {
                   />
                   <span>I&apos;m into SQL</span>
                 </label>
-                <label className="checkbox checkbox-disabled" aria-disabled="true">
+                <label className="checkbox">
                   <input
                     type="checkbox"
                     name="interest_python"
                     checked={interestPython}
-                    onChange={() => {}}
-                    disabled
+                    onChange={(e) => {
+                      setInterestPython(e.target.checked);
+                      if (e.target.checked) {
+                        setCheckboxError("");
+                      }
+                    }}
+                    disabled={isSubmitting}
                   />
-                  <span>I&apos;m into Python (coming soon 👀)</span>
+                  <span>I&apos;m into Python</span>
                 </label>
               </div>
               
