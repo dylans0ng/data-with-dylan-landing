@@ -3,6 +3,37 @@ import React, { useEffect, useRef, useState } from "react";
 import "./index.css"; // or "./style.css" if that's your filename
 import "./App.css";
 
+const TOPIC_PREFS_ERROR =
+  "We're having trouble saving your topic preferences. Please try again later.";
+
+const parsePositiveIntEnv = (value: unknown): number | null => {
+  if (value === undefined || value === null || value === "") {
+    return null;
+  }
+  const parsed =
+    typeof value === "number" ? value : parseInt(String(value), 10);
+  if (Number.isFinite(parsed) && parsed > 0) {
+    return parsed;
+  }
+  return null;
+};
+
+const buildSelectedTagIds = (
+  interestSql: boolean,
+  interestPython: boolean,
+  sqlTagId: number | null,
+  pythonTagId: number | null
+): number[] => {
+  const tags: number[] = [];
+  if (interestSql && sqlTagId !== null) {
+    tags.push(sqlTagId);
+  }
+  if (interestPython && pythonTagId !== null) {
+    tags.push(pythonTagId);
+  }
+  return tags;
+};
+
 const App: React.FC = () => {
   // Form state
   const [firstName, setFirstName] = useState("");
@@ -68,47 +99,26 @@ const App: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Get environment variables (Vite client-side envs must use VITE_ prefix)
+  // Kit env: form "Data with Dylan Form"; tags SQL + Python-Basics drive Liquid in "SQL & Python Sequence".
+  // Automation is Form → Sequence only (no auto-tag step in Kit).
   const apiKey = import.meta.env.VITE_CONVERTKIT_API_KEY;
-  const formId = import.meta.env.VITE_CONVERTKIT_SQL_JOINS_FORM_ID;
+  const formId = import.meta.env.VITE_CONVERTKIT_FORM_ID;
   const rawSqlTagId = import.meta.env.VITE_CONVERTKIT_SQL_TAG_ID;
+  const rawPythonTagId = import.meta.env.VITE_CONVERTKIT_PYTHON_TAG_ID;
   const isDev = import.meta.env.DEV === true;
 
-  // Dev-only logging helpers
-  // Purpose: keep useful diagnostics during development without polluting production logs.
-  // - Info/Warn gate on isDev
-  // - Errors always log (visible in all environments)
   const logDevInfo = (...args: unknown[]) => { if (isDev) console.info(...args); };
-  const logDevWarn = (...args: unknown[]) => { if (isDev) console.warn(...args); };
   const logErrorAlways = (...args: unknown[]) => { console.error(...args); };
 
-  // Helper to defensively validate optional SQL tag ID
-  // - Accepts string or number from env
-  // - Returns a number when valid, otherwise null
-  const getValidSqlTagId = (): number | null => {
-    if (rawSqlTagId === undefined || rawSqlTagId === null || rawSqlTagId === "") {
-      return null;
-    }
-    // Convert to number safely
-    const parsed = typeof rawSqlTagId === "number"
-      ? rawSqlTagId
-      : parseInt(String(rawSqlTagId), 10);
-    if (Number.isFinite(parsed) && parsed > 0) {
-      return parsed;
-    }
-    return null;
-  };
+  const validatedSqlTagId = parsePositiveIntEnv(rawSqlTagId);
+  const validatedPythonTagId = parsePositiveIntEnv(rawPythonTagId);
 
-  const validatedSqlTagId = getValidSqlTagId();
-
-  // Temporary runtime diagnostics for env wiring
   useEffect(() => {
-    // Gate diagnostics so they only appear in development
-    logDevInfo("[ConvertKit] apiKey present?", Boolean(apiKey), apiKey ? `len=${apiKey.length}` : "missing");
-    logDevInfo("[ConvertKit] formId present?", Boolean(formId), formId ? `len=${String(formId).length}` : "missing");
-    logDevInfo("[ConvertKit] rawSqlTagId present?", Boolean(rawSqlTagId), rawSqlTagId ? `val=${rawSqlTagId}` : "missing");
-    logDevInfo("[ConvertKit] validatedSqlTagId:", validatedSqlTagId ?? "none");
-  }, [apiKey, formId, rawSqlTagId, validatedSqlTagId]);
+    logDevInfo("[Kit] apiKey present?", Boolean(apiKey), apiKey ? `len=${apiKey.length}` : "missing");
+    logDevInfo("[Kit] formId present?", Boolean(formId), formId ? `len=${String(formId).length}` : "missing");
+    logDevInfo("[Kit] sqlTagId valid?", validatedSqlTagId !== null);
+    logDevInfo("[Kit] pythonTagId valid?", validatedPythonTagId !== null);
+  }, [apiKey, formId, validatedSqlTagId, validatedPythonTagId]);
 
   // At least one topic must be selected for form validity.
   const isFormValid = interestSql || interestPython;
@@ -129,10 +139,10 @@ const App: React.FC = () => {
     // Validate environment variables
     if (!apiKey || !formId) {
       // Errors should always be visible in any environment
-      logErrorAlways("[ConvertKit] Missing env config", { apiKey: Boolean(apiKey), formId: Boolean(formId) });
+      logErrorAlways("[Kit] Missing env config", { apiKey: Boolean(apiKey), formId: Boolean(formId) });
       setSubmitStatus({
         type: "error",
-        message: "Configuration error: Please check your ConvertKit API key and Form ID.",
+        message: "Configuration error: Please check your Kit API key and Form ID.",
       });
       return;
     }
@@ -158,34 +168,41 @@ const App: React.FC = () => {
       return;
     }
 
+    if (interestSql && validatedSqlTagId === null) {
+      logErrorAlways("[Kit] SQL selected but VITE_CONVERTKIT_SQL_TAG_ID is missing or invalid");
+      setSubmitStatus({ type: "error", message: TOPIC_PREFS_ERROR });
+      return;
+    }
+    if (interestPython && validatedPythonTagId === null) {
+      logErrorAlways("[Kit] Python selected but VITE_CONVERTKIT_PYTHON_TAG_ID is missing or invalid");
+      setSubmitStatus({ type: "error", message: TOPIC_PREFS_ERROR });
+      return;
+    }
+
+    const selectedTagIds = buildSelectedTagIds(
+      interestSql,
+      interestPython,
+      validatedSqlTagId,
+      validatedPythonTagId
+    );
+
     setIsSubmitting(true);
     setSubmitStatus({ type: null, message: "" });
 
     try {
-      // Prepare request payload
       const requestBody: {
         email: string;
         first_name?: string;
-        tags?: number[];
+        tags: number[];
       } = {
-        email: email,
+        email: trimmedEmail,
         first_name: firstName.trim() || undefined,
+        tags: selectedTagIds,
       };
 
-      // Apply SQL tag if SQL checkbox is selected AND tag ID is valid.
-      // Otherwise, gracefully rely on ConvertKit automations.
-      if (interestSql) {
-        if (validatedSqlTagId !== null) {
-          requestBody.tags = [validatedSqlTagId];
-          // Dev-mode informational message only
-          logDevWarn("[ConvertKit] Using explicit tag id from env:", validatedSqlTagId);
-        } else {
-          // Dev-mode informational message explaining fallback to automation
-          logDevInfo("[ConvertKit] No valid tag id found. Falling back to automation-only tagging.");
-        }
-      }
+      logDevInfo("[Kit] Subscribing with tags:", selectedTagIds);
 
-      // Submit to ConvertKit API
+      // Submit to Kit (ConvertKit) API
       // Using redirect: 'manual' to prevent browser from following any redirects
       const response = await fetch(
         `https://api.convertkit.com/v3/forms/${formId}/subscribe?api_key=${apiKey}`,
@@ -203,7 +220,7 @@ const App: React.FC = () => {
       if (response.type === "opaqueredirect" || response.status >= 300 && response.status < 400) {
         setSubmitStatus({
           type: "error",
-          message: "Configuration error: Please verify your ConvertKit API settings.",
+          message: "Configuration error: Please verify your Kit API settings.",
         });
         return;
       }
@@ -223,7 +240,7 @@ const App: React.FC = () => {
         setEmailError("");
         setCheckboxError("");
       } else {
-        // Handle ConvertKit API errors
+        // Handle Kit API errors
         const errorMessage =
           data.message || "Something went wrong. Please try again.";
         setSubmitStatus({
@@ -476,7 +493,7 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* CONVERTKIT SIGNUP */}
+        {/* Kit signup */}
         <section
           id="join"
           className="section section-join reveal-section"
@@ -542,7 +559,7 @@ const App: React.FC = () => {
                 </div>
               )}
 
-              {/* Optional: tag/checkboxes if you want to segment later */}
+              {/* Topic interest checkboxes */}
               <div className="input-row">
                 <label className="checkbox">
                   <input
