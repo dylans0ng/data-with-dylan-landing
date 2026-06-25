@@ -624,7 +624,7 @@ const App: React.FC = () => {
                 className="btn btn-primary btn-full"
                 disabled={isSubmitting || !isFormValid}
               >
-                {isSubmitting ? "Submitting..." : "📬 Send me the cheat sheets"}
+                {isSubmitting ? "Submitting..." : "📬 Get the free learning resources"}
               </button>
 
               <p className="small-print">
