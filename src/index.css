@@ -992,6 +992,15 @@ body {
     display: none;
   }
 
+  .nav-home .nav-links a:nth-child(2) {
+    display: inline-flex;
+  }
+
+  .nav-resources .nav-links a:nth-child(1),
+  .nav-resources .nav-links a:nth-child(2) {
+    display: inline-flex;
+  }
+
   /* Mobile-specific: ensure no horizontal overflow */
   body {
     overflow-x: hidden;
