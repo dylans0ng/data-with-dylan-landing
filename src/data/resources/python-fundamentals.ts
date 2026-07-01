@@ -8,6 +8,14 @@ import cheatSheetDictionaries from "../../assets/resources/python-fundamentals/c
 import cheatSheetFileIo from "../../assets/resources/python-fundamentals/cheat-sheets/Python_File_IO_Cheat_Sheet.pdf?url";
 import cheatSheetPandas from "../../assets/resources/python-fundamentals/cheat-sheets/Python_Dictionaries_to_Pandas_DataFrames_Cheat_Sheet.pdf?url";
 
+import cheatSheetVariablesPreview from "../../assets/resources/python-fundamentals/previews/cheat-sheets/Python_Variables_Data_Types_Cheat_Sheet.png";
+import cheatSheetConditionalsPreview from "../../assets/resources/python-fundamentals/previews/cheat-sheets/Python_Conditional_Logic_Cheat_Sheet.png";
+import cheatSheetLoopsPreview from "../../assets/resources/python-fundamentals/previews/cheat-sheets/Python_For_While_Loops_Cheat_Sheet.png";
+import cheatSheetCollectionsPreview from "../../assets/resources/python-fundamentals/previews/cheat-sheets/Python_Lists_Sets_Tuples_Cheat_Sheet.png";
+import cheatSheetDictionariesPreview from "../../assets/resources/python-fundamentals/previews/cheat-sheets/Python_Dictionaries_Cheat_Sheet.png";
+import cheatSheetFileIoPreview from "../../assets/resources/python-fundamentals/previews/cheat-sheets/Python_File_IO_Cheat_Sheet.png";
+import cheatSheetPandasPreview from "../../assets/resources/python-fundamentals/previews/cheat-sheets/Python_Dictionaries_to_Pandas_DataFrames_Cheat_Sheet.png";
+
 import guidedNotesVariables from "../../assets/resources/python-fundamentals/guided-notes/Python_Variables_Guided_Notes.pdf?url";
 import guidedNotesConditionals from "../../assets/resources/python-fundamentals/guided-notes/Python_Conditional_Logic_Guided_Notes.pdf?url";
 import guidedNotesLoops from "../../assets/resources/python-fundamentals/guided-notes/Python_For_While_Loops_Guided_Notes.pdf?url";
@@ -15,6 +23,14 @@ import guidedNotesCollections from "../../assets/resources/python-fundamentals/g
 import guidedNotesDictionaries from "../../assets/resources/python-fundamentals/guided-notes/Python_Dictionaries_Guided_Notes.pdf?url";
 import guidedNotesFileIo from "../../assets/resources/python-fundamentals/guided-notes/Python_File_IO_Guided_Notes.pdf?url";
 import guidedNotesPandas from "../../assets/resources/python-fundamentals/guided-notes/Python_Pandas_DataFrames_Guided_Notes.pdf?url";
+
+import guidedNotesVariablesPreview from "../../assets/resources/python-fundamentals/previews/guided-notes/Python_Variables_Guided_Notes.png";
+import guidedNotesConditionalsPreview from "../../assets/resources/python-fundamentals/previews/guided-notes/Python_Conditional_Logic_Guided_Notes.png";
+import guidedNotesLoopsPreview from "../../assets/resources/python-fundamentals/previews/guided-notes/Python_For_While_Loops_Guided_Notes.png";
+import guidedNotesCollectionsPreview from "../../assets/resources/python-fundamentals/previews/guided-notes/Python_Lists_Sets_Tuples_Guided_Notes.png";
+import guidedNotesDictionariesPreview from "../../assets/resources/python-fundamentals/previews/guided-notes/Python_Dictionaries_Guided_Notes.png";
+import guidedNotesFileIoPreview from "../../assets/resources/python-fundamentals/previews/guided-notes/Python_File_IO_Guided_Notes.png";
+import guidedNotesPandasPreview from "../../assets/resources/python-fundamentals/previews/guided-notes/Python_Pandas_DataFrames_Guided_Notes.png";
 
 const TOPIC_SLUG = "python-fundamentals";
 
@@ -122,6 +138,16 @@ const cheatSheetAssets = [
   cheatSheetPandas,
 ];
 
+const cheatSheetPreviewAssets = [
+  cheatSheetVariablesPreview,
+  cheatSheetConditionalsPreview,
+  cheatSheetLoopsPreview,
+  cheatSheetCollectionsPreview,
+  cheatSheetDictionariesPreview,
+  cheatSheetFileIoPreview,
+  cheatSheetPandasPreview,
+];
+
 const guidedNotesAssets = [
   guidedNotesVariables,
   guidedNotesConditionals,
@@ -132,9 +158,20 @@ const guidedNotesAssets = [
   guidedNotesPandas,
 ];
 
+const guidedNotesPreviewAssets = [
+  guidedNotesVariablesPreview,
+  guidedNotesConditionalsPreview,
+  guidedNotesLoopsPreview,
+  guidedNotesCollectionsPreview,
+  guidedNotesDictionariesPreview,
+  guidedNotesFileIoPreview,
+  guidedNotesPandasPreview,
+];
+
 function buildLessons(
   format: "cheat-sheets" | "guided-notes",
-  assets: string[]
+  assets: string[],
+  previewAssets: string[]
 ): LessonResource[] {
   return lessonMeta.map((lesson, index) => ({
     id: `${TOPIC_SLUG}-${format}-${lesson.slug}`,
@@ -145,6 +182,7 @@ function buildLessons(
     topicSlug: TOPIC_SLUG,
     format,
     pdfAsset: assets[index],
+    thumbnailAsset: previewAssets[index],
     availability: "published" as const,
     accessLevel: "preview" as const,
     includedItems: [...lesson.includedItems],
@@ -152,6 +190,6 @@ function buildLessons(
 }
 
 export const pythonFundamentalsLessons: LessonResource[] = [
-  ...buildLessons("cheat-sheets", cheatSheetAssets),
-  ...buildLessons("guided-notes", guidedNotesAssets),
+  ...buildLessons("cheat-sheets", cheatSheetAssets, cheatSheetPreviewAssets),
+  ...buildLessons("guided-notes", guidedNotesAssets, guidedNotesPreviewAssets),
 ];

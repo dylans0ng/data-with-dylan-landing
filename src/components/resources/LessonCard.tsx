@@ -15,13 +15,18 @@ const LessonCard: React.FC<LessonCardProps> = ({ lesson }) => {
         <span className="lesson-number-badge">Lesson {lesson.lessonNumber}</span>
         <StatusBadge variant={lesson.format} />
       </div>
-      <div
-        className="lesson-preview-placeholder"
-        aria-hidden="true"
-      >
-        <span className="lesson-preview-icon">
-          {lesson.format === "cheat-sheets" ? "📋" : "📝"}
-        </span>
+      <div className="lesson-preview-placeholder" aria-hidden="true">
+        {lesson.thumbnailAsset ? (
+          <img
+            src={lesson.thumbnailAsset}
+            alt=""
+            className="lesson-card-preview-image"
+          />
+        ) : (
+          <span className="lesson-preview-icon">
+            {lesson.format === "cheat-sheets" ? "Clipboard" : "Notes"}
+          </span>
+        )}
       </div>
       <h3>{lesson.title}</h3>
       <p>{lesson.description}</p>

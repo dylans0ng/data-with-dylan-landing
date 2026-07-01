@@ -59,7 +59,11 @@ const LessonDetailPage: React.FC = () => {
             <h1 className="section-title lesson-detail-title">{lesson.title}</h1>
             <p className="body-copy">{lesson.description}</p>
 
-            <LessonPreviewPanel format={validFormat} title={lesson.title} />
+            <LessonPreviewPanel
+              format={validFormat}
+              title={lesson.title}
+              thumbnailAsset={lesson.thumbnailAsset}
+            />
 
             <div className="lesson-detail-includes">
               <h2 className="resources-subheading">What&apos;s included</h2>
