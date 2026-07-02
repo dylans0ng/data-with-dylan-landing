@@ -1,4 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import AccountPage from "../pages/auth/AccountPage";
+import AuthCallbackPage from "../pages/auth/AuthCallbackPage";
+import AuthPage from "../pages/auth/AuthPage";
 import HomePage from "../pages/HomePage";
 import LessonCollectionPage from "../pages/resources/LessonCollectionPage";
 import LessonDetailPage from "../pages/resources/LessonDetailPage";
@@ -10,6 +13,10 @@ const AppRouter: React.FC = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/signup" element={<AuthPage mode="signup" />} />
+        <Route path="/login" element={<AuthPage mode="login" />} />
+        <Route path="/auth/callback" element={<AuthCallbackPage />} />
+        <Route path="/account" element={<AccountPage />} />
         <Route path="/resources" element={<ResourcesIndexPage />} />
         <Route path="/resources/:topicSlug" element={<TopicOverviewPage />} />
         <Route

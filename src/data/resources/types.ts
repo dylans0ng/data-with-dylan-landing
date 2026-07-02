@@ -27,7 +27,8 @@ export interface LessonResource {
   description: string;
   topicSlug: string;
   format: ResourceFormat;
-  pdfAsset: string;
+  storageKey: string;
+  downloadFileName: string;
   thumbnailAsset?: string;
   videoUrl?: string;
   availability: LessonAvailability;

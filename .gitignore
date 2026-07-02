@@ -25,3 +25,8 @@ dist-ssr
 
 # Environment variables (makes sure that my API keys aren't pushed to GitHub)
 .env
+# Local platform metadata
+.vercel
+
+.vercel
+.env*

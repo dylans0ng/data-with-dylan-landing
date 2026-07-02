@@ -161,6 +161,22 @@
   margin-bottom: 1.5rem;
 }
 
+.library-access-banner {
+  max-width: 42rem;
+  margin: 0 0 1.5rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(129, 140, 248, 0.35);
+  border-radius: var(--radius-md);
+  background: rgba(79, 70, 229, 0.12);
+}
+
+.library-access-banner p {
+  margin: 0;
+  color: var(--text-main);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
 .format-chooser-grid {
   margin-top: 0.5rem;
 }
@@ -368,6 +384,61 @@
   width: fit-content;
 }
 
+.auth-main {
+  flex: 1;
+}
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+}
+
+.auth-card {
+  width: min(100%, 31rem);
+  padding: 1.5rem;
+  border-radius: var(--radius-xl);
+  background: radial-gradient(circle at top left, #020617, #020617);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow-soft);
+}
+
+.auth-form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.auth-switch {
+  margin: 1rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.auth-switch a {
+  color: var(--accent-strong);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-switch a:hover,
+.auth-switch a:focus-visible {
+  text-decoration: underline;
+  outline: none;
+}
+
+.auth-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.auth-access-list {
+  margin-top: 1rem;
+}
+
 .lesson-detail-back {
   display: inline-block;
   color: var(--accent-strong);
@@ -402,8 +473,13 @@
   }
 
   .topic-card-cta,
-  .access-cta-secondary {
+  .access-cta-secondary,
+  .auth-actions .btn {
     width: 100%;
     text-align: center;
+  }
+
+  .auth-card {
+    padding: 1.15rem;
   }
 }

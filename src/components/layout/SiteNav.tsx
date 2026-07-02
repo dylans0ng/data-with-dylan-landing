@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../auth/useAuth";
 
 export type NavMode = "home" | "resources";
 
@@ -19,6 +20,7 @@ type SiteNavProps = HomeNavProps | ResourcesNavProps;
 
 const SiteNav: React.FC<SiteNavProps> = (props) => {
   const [navScrolled, setNavScrolled] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -89,9 +91,15 @@ const SiteNav: React.FC<SiteNavProps> = (props) => {
           <>
             <Link to="/">Home</Link>
             <Link to="/resources">Resources</Link>
-            <Link to="/#join" className="nav-cta">
-              Join the list
-            </Link>
+            {user ? (
+              <Link to="/account" className="nav-cta">
+                Account
+              </Link>
+            ) : (
+              <Link to="/signup" className="nav-cta">
+                Create account
+              </Link>
+            )}
           </>
         )}
       </nav>
