@@ -11,7 +11,11 @@ import {
   isSupabaseConfigured,
   supabase,
 } from "../lib/supabase";
-import { AuthContext, type AuthContextValue, type AuthResult } from "./authContext";
+import {
+  AuthContext,
+  type AuthContextValue,
+  type AuthResult,
+} from "./authContext";
 
 function buildAuthRedirect(redirectTo: string): string {
   const callbackUrl = new URL("/auth/callback", window.location.origin);
@@ -20,6 +24,10 @@ function buildAuthRedirect(redirectTo: string): string {
 }
 
 async function syncKitSubscriber(session: Session): Promise<void> {
+  if (session.user.user_metadata.email_list_opt_in !== true) {
+    return;
+  }
+
   const syncKey = `kit-sync:${session.user.id}:python-fundamentals`;
 
   if (window.localStorage.getItem(syncKey) === "synced") {
@@ -103,13 +111,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     async (
       email: string,
       password: string,
-      redirectTo: string
+      redirectTo: string,
+      emailListOptIn: boolean
     ): Promise<AuthResult> => {
       const client = getSupabaseClient();
       const { data, error } = await client.auth.signUp({
         email,
         password,
         options: {
+          data: {
+            email_list_opt_in: emailListOptIn,
+            email_list_source: "signup-page",
+          },
           emailRedirectTo: buildAuthRedirect(redirectTo),
         },
       });

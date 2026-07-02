@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import SiteLayout from "../components/layout/SiteLayout";
 
 const TOPIC_PREFS_ERROR =
@@ -93,9 +94,9 @@ const HomePage: React.FC = () => {
   const rawPythonTagId = import.meta.env.VITE_CONVERTKIT_PYTHON_TAG_ID;
   const isDev = import.meta.env.DEV === true;
 
-  const logDevInfo = (...args: unknown[]) => {
+  const logDevInfo = useCallback((...args: unknown[]) => {
     if (isDev) console.info(...args);
-  };
+  }, [isDev]);
   const logErrorAlways = (...args: unknown[]) => {
     console.error(...args);
   };
@@ -108,7 +109,7 @@ const HomePage: React.FC = () => {
     logDevInfo("[Kit] formId present?", Boolean(formId), formId ? `len=${String(formId).length}` : "missing");
     logDevInfo("[Kit] sqlTagId valid?", validatedSqlTagId !== null);
     logDevInfo("[Kit] pythonTagId valid?", validatedPythonTagId !== null);
-  }, [apiKey, formId, validatedSqlTagId, validatedPythonTagId]);
+  }, [apiKey, formId, logDevInfo, validatedSqlTagId, validatedPythonTagId]);
 
   const isFormValid = interestSql || interestPython;
 
@@ -211,7 +212,7 @@ const HomePage: React.FC = () => {
       if (response.ok && data.subscription) {
         setSubmitStatus({
           type: "success",
-          message: "Success! Check your inbox (or spam) for the cheat sheets. 🎉",
+          message: "Success! Check your inbox to confirm you're on the list.",
         });
         setFirstName("");
         setEmail("");
@@ -257,26 +258,22 @@ const HomePage: React.FC = () => {
             <div className="hero-content">
               <p className="eyebrow">🚀 Python · SQL · Data Science</p>
               <h1 className="hero-title">
-                Jumpstart your
-                <span className="accent"> Data Science Journey</span> for Free.
+                Jumpstart your data science journey with
+                <span className="accent"> free resources.</span>
               </h1>
               <p className="hero-subtitle">
-                Get beginner-friendly Python and SQL cheat sheets, visual explainers,
-                and practice problems—designed for busy students and early-career
-                data folks.
+                Use clear cheat sheets and guided notes to follow along with my
+                videos, review key ideas, and practice what you learn one step
+                at a time.
               </p>
 
               <div className="hero-cta-row">
-                <a
-                  href="#join"
+                <Link
+                  to="/resources"
                   className="btn btn-primary"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    scrollToSection(joinRef);
-                  }}
                 >
-                  Get the cheat sheets
-                </a>
+                  Explore free resources
+                </Link>
                 <a
                   href="https://www.youtube.com/@data_with_dylan"
                   target="_blank"
@@ -299,12 +296,12 @@ const HomePage: React.FC = () => {
               </p>
             </div>
             <div className="hero-card">
-              <div className="hero-tag">What you’ll get</div>
+              <div className="hero-tag">Resource library</div>
               <ul className="hero-list">
-                <li>📌 Step-by-step examples in Python + SQL</li>
-                <li>🧠 Intuition-first explanations (not just formulas)</li>
-                <li>📝 Practice problems with solutions</li>
-                <li>📬 New resources sent straight to your inbox</li>
+                <li>Lesson-by-lesson materials</li>
+                <li>Cheat sheets for quick review</li>
+                <li>Guided notes for following along with videos</li>
+                <li>Beginner-friendly examples</li>
               </ul>
             </div>
           </div>
@@ -357,47 +354,62 @@ const HomePage: React.FC = () => {
           }}
         >
           <div className="page-container">
-            <p className="eyebrow">Free resources</p>
+            <p className="eyebrow">Learning resources</p>
             <h2 className="section-title">
-              Choose your starting point (or grab both)
+              Start with the Python Fundamentals resource library
             </h2>
+            <p className="body-copy resources-home-intro">
+              A complete beginner-friendly collection that pairs with my Python
+              videos, including cheat sheets and guided notes for each lesson.
+            </p>
 
             <div className="cards-grid">
-              <article className="resource-card">
-                <div className="resource-icon">🗄️</div>
-                <h3>SQL Foundations Cheatsheet</h3>
+              <article className="resource-card resource-card-featured">
+                <div className="resource-icon">🐍</div>
+                <h3>Python Fundamentals</h3>
                 <p>
-                  SELECTs, JOINs, GROUP BY, window functions, and the patterns
-                  you&apos;ll actually see in interviews and real projects.
+                  Follow 7 beginner Python lessons from variables and
+                  conditionals through loops, collections, file I/O, and a first
+                  Pandas DataFrame.
                 </p>
                 <ul className="card-list">
-                  <li>From basic SELECTs to intermediate queries</li>
-                  <li>Visual diagrams to understand joins</li>
-                  <li>Practice questions with answers</li>
+                  <li>7 lesson-by-lesson cheat sheets</li>
+                  <li>7 guided notes PDFs</li>
+                  <li>Built to review, follow along, and practice</li>
                 </ul>
-                <a
-                  href="#join"
-                  className="btn btn-secondary"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    scrollToSection(joinRef);
-                  }}
-                >
-                  Get the SQL guide
-                </a>
+                <div className="resource-card-actions">
+                  <Link
+                    to="/resources/python-fundamentals"
+                    className="btn btn-primary"
+                  >
+                    Explore Python Fundamentals
+                  </Link>
+                  <Link
+                    to="/resources/python-fundamentals/cheat-sheets"
+                    className="btn btn-secondary"
+                  >
+                    Browse cheat sheets
+                  </Link>
+                  <Link
+                    to="/resources/python-fundamentals/guided-notes"
+                    className="btn btn-ghost"
+                  >
+                    Browse guided notes
+                  </Link>
+                </div>
               </article>
 
               <article className="resource-card">
-                <div className="resource-icon">🐍</div>
-                <h3>Python Fundamentals Cheatsheet</h3>
+                <div className="resource-icon">🗄️</div>
+                <h3>SQL Foundations</h3>
                 <p>
-                  Variables, data types, loops, functions, and real examples so
-                  you can actually build things—not just memorize syntax.
+                  SQL resources are planned next, with beginner-friendly
+                  references for SELECTs, joins, grouping, and query patterns.
                 </p>
                 <ul className="card-list">
-                  <li>Core concepts in under 10 minutes per section</li>
-                  <li>Beginner-friendly practice problems</li>
-                  <li>Perfect supplement to my Python videos</li>
+                  <li>Beginner-friendly SQL references</li>
+                  <li>Visual explanations for query patterns</li>
+                  <li>Practice-focused materials as the collection grows</li>
                 </ul>
                 <a
                   href="#join"
@@ -407,7 +419,7 @@ const HomePage: React.FC = () => {
                     scrollToSection(joinRef);
                   }}
                 >
-                  Get the Python guide
+                  Get SQL updates
                 </a>
               </article>
             </div>
@@ -427,14 +439,12 @@ const HomePage: React.FC = () => {
               <div>
                 <p className="eyebrow">Join the newsletter</p>
                 <h2 className="section-title">
-                  Get the cheat sheets & new lessons in your inbox
+                  Get new resources and tutorials when they launch
                 </h2>
                 <p className="body-copy">
-                  Drop your email below and I&apos;ll send you the guides! You&apos;ll
-                  also get occasional newsletters with exclusive resources that I only
-                  share with my email subscribers, including sneak-peek previews of my
-                  upcoming videos, more practice problems, and personal insights from my
-                  own learning journey.
+                  Join the email list if you&apos;d like occasional updates about new
+                  cheat sheets, guided notes, videos, and practice materials.
+                  Resource access is separate, so subscribing is optional.
                 </p>
               </div>
 
@@ -496,7 +506,7 @@ const HomePage: React.FC = () => {
                       aria-describedby={checkboxError ? "checkbox-error" : undefined}
                       required
                     />
-                    <span>I&apos;m into SQL</span>
+                    <span>Send me SQL updates</span>
                   </label>
                   <label className="checkbox">
                     <input
@@ -511,7 +521,7 @@ const HomePage: React.FC = () => {
                       }}
                       disabled={isSubmitting}
                     />
-                    <span>I&apos;m into Python</span>
+                    <span>Send me Python updates</span>
                   </label>
                 </div>
 
@@ -541,11 +551,16 @@ const HomePage: React.FC = () => {
                   className="btn btn-primary btn-full"
                   disabled={isSubmitting || !isFormValid}
                 >
-                  {isSubmitting ? "Submitting..." : "📬 Get the free learning resources"}
+                  {isSubmitting ? "Submitting..." : "Send me learning updates"}
                 </button>
 
                 <p className="small-print">
-                  No spam. Unsubscribe any time with one click.
+                  If you don&apos;t see the email, check your spam or promotions
+                  folder.
+                </p>
+
+                <p className="small-print">
+                  No spam. Unsubscribe any time.
                 </p>
               </form>
             </div>

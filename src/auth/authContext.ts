@@ -15,7 +15,8 @@ export interface AuthContextValue {
   signUp: (
     email: string,
     password: string,
-    redirectTo: string
+    redirectTo: string,
+    emailListOptIn: boolean
   ) => Promise<AuthResult>;
 }
 

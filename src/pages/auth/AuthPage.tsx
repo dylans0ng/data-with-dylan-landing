@@ -18,6 +18,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
   const [formError, setFormError] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [emailListOptIn, setEmailListOptIn] = useState(false);
 
   const redirectTo = useMemo(
     () => getSafeRedirect(searchParams.get("redirect")),
@@ -46,7 +47,12 @@ const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
 
     try {
       if (isSignup) {
-        const result = await signUp(email, password, redirectTo);
+        const result = await signUp(
+          email,
+          password,
+          redirectTo,
+          emailListOptIn
+        );
 
         if (result.needsEmailConfirmation) {
           setStatusMessage(
@@ -76,12 +82,11 @@ const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
         <section className="section resources-section">
           <div className="page-container auth-container">
             <div className="auth-card">
-              <p className="eyebrow">PYTHON FUNDAMENTALS</p>
               <h1 className="section-title">{title}</h1>
               <p className="body-copy">
                 {isSignup
-                  ? "Create a free account to unlock the full Python Fundamentals resource library."
-                  : "Log in to download your Python Fundamentals cheat sheets and guided notes."}
+                  ? "Create a free account to unlock the full resource library."
+                  : "Log in to access your saved resources and downloads."}
               </p>
 
               {!isConfigured && (
@@ -116,6 +121,20 @@ const AuthPage: React.FC<AuthPageProps> = ({ mode }) => {
                     disabled={!isConfigured || isSubmitting}
                   />
                 </label>
+
+                {isSignup && (
+                  <label className="checkbox auth-opt-in">
+                    <input
+                      type="checkbox"
+                      checked={emailListOptIn}
+                      onChange={(event) =>
+                        setEmailListOptIn(event.target.checked)
+                      }
+                      disabled={!isConfigured || isSubmitting}
+                    />
+                    <span>Send me free learning resources to my inbox!</span>
+                  </label>
+                )}
 
                 {formError && <p className="inline-error">{formError}</p>}
                 {statusMessage && (

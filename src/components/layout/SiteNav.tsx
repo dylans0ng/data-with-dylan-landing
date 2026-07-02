@@ -66,6 +66,7 @@ const SiteNav: React.FC<SiteNavProps> = (props) => {
       <nav className="nav-links" aria-label="Main navigation">
         {props.mode === "home" ? (
           <>
+            <Link to="/resources">Resources</Link>
             <a
               href="#about"
               onClick={(e) => {
@@ -75,17 +76,27 @@ const SiteNav: React.FC<SiteNavProps> = (props) => {
             >
               About
             </a>
-            <Link to="/resources">Resources</Link>
             <a
               href="#join"
-              className="nav-cta"
               onClick={(e) => {
                 e.preventDefault();
                 props.onScrollToSection(props.joinRef);
               }}
             >
-              Join the list
+              Updates
             </a>
+            {user ? (
+              <Link to="/account" className="nav-cta">
+                Account
+              </Link>
+            ) : (
+              <Link
+                to="/signup?redirect=/resources/python-fundamentals"
+                className="nav-cta"
+              >
+                Create account
+              </Link>
+            )}
           </>
         ) : (
           <>
