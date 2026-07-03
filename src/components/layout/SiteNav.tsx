@@ -83,7 +83,7 @@ const SiteNav: React.FC<SiteNavProps> = (props) => {
                 props.onScrollToSection(props.joinRef);
               }}
             >
-              Updates
+              News
             </a>
             {user ? (
               <Link to="/account" className="nav-cta">

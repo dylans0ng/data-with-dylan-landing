@@ -554,14 +554,11 @@ const HomePage: React.FC = () => {
                   {isSubmitting ? "Submitting..." : "Send me learning updates"}
                 </button>
 
-                <p className="small-print">
-                  If you don&apos;t see the email, check your spam or promotions
-                  folder.
-                </p>
-
-                <p className="small-print">
-                  No spam. Unsubscribe any time.
-                </p>
+                <div className="join-form-footer">
+                  <p className="small-print small-print-reminder">
+                    Didn&apos;t get the email? Check your spam or promotions folder.
+                  </p>
+                </div>
               </form>
             </div>
           </div>

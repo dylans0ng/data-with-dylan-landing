@@ -905,6 +905,34 @@ body {
   color: var(--text-muted);
 }
 
+.join-form-footer {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 8px;
+}
+
+.join-form-footer .small-print {
+  margin: 0;
+}
+
+.small-print-reminder {
+  text-align: left;
+}
+
+@media (min-width: 769px) {
+  .join-form-footer {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .small-print-reminder {
+    margin-left: auto;
+    text-align: right;
+  }
+}
+
 .form-status {
   padding: 14px 16px;
   border-radius: var(--radius-md);
