@@ -1,3 +1,11 @@
+import {
+  defaultConvertKitV3ApiBaseUrl,
+  defaultKitV4ApiBaseUrl,
+  normalizeTagId,
+  subscribeConvertKitV3Tag,
+  syncKitSubscriberV4,
+} from "./_kit.js";
+
 function json(res, statusCode, body) {
   res.statusCode = statusCode;
   res.setHeader("Content-Type", "application/json");
@@ -25,16 +33,31 @@ export default async function handler(req, res) {
     return;
   }
 
-  const supabaseUrl = process.env.SUPABASE_URL;
+  try {
+  const supabaseUrl = process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL;
   const authApiKey =
-    process.env.SUPABASE_ANON_KEY ?? process.env.VITE_SUPABASE_ANON_KEY;
+    process.env.SUPABASE_ANON_KEY ??
+    process.env.VITE_SUPABASE_ANON_KEY ??
+    process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const kitApiKey = process.env.KIT_API_KEY;
   const kitApiSecret = process.env.KIT_API_SECRET;
-  const kitTagId = process.env.KIT_PYTHON_BASICS_TAG_ID;
-  const kitApiBaseUrl =
-    process.env.KIT_API_BASE_URL ?? "https://api.convertkit.com/v3";
+  const kitTagId = normalizeTagId(
+    process.env.KIT_PYTHON_BASICS_TAG_ID ??
+      process.env.VITE_CONVERTKIT_PYTHON_TAG_ID
+  );
+  const kitV3ApiBaseUrl =
+    process.env.KIT_API_BASE_URL ?? defaultConvertKitV3ApiBaseUrl;
+  const kitV4ApiBaseUrl =
+    process.env.KIT_V4_API_BASE_URL ?? defaultKitV4ApiBaseUrl;
 
   if (!supabaseUrl || !authApiKey) {
-    json(res, 500, { error: "Supabase sync environment is missing." });
+    json(res, 500, {
+      error: "Supabase sync environment is missing.",
+      missing: {
+        supabaseUrl: !supabaseUrl,
+        authApiKey: !authApiKey,
+      },
+    });
     return;
   }
 
@@ -54,33 +77,39 @@ export default async function handler(req, res) {
     return;
   }
 
-  if (!kitApiSecret || !kitTagId) {
-    json(res, 200, { skipped: true, synced: false });
-    return;
-  }
-
-  const response = await fetch(`${kitApiBaseUrl}/tags/${kitTagId}/subscribe`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      api_secret: kitApiSecret,
-      email: user.email,
-      fields: {
-        resource_topic: "python-fundamentals",
-        source: "data-with-dylan-resources",
+  if (!kitTagId || (!kitApiKey && !kitApiSecret)) {
+    json(res, 200, {
+      skipped: true,
+      synced: false,
+      missing: {
+        kitTagId: !kitTagId,
+        kitApiKey: !kitApiKey,
+        kitApiSecret: !kitApiSecret,
       },
-    }),
-  });
-
-  const payload = await response.json().catch(() => ({}));
-
-  if (!response.ok) {
-    json(res, 502, {
-      error: "Unable to sync the subscriber to Kit.",
-      kitResponse: payload,
     });
     return;
   }
 
-  json(res, 200, { synced: true });
+  const result = kitApiKey
+    ? await syncKitSubscriberV4({
+        apiBaseUrl: kitV4ApiBaseUrl,
+        apiKey: kitApiKey,
+        email: user.email,
+        tagIds: [kitTagId],
+      })
+    : await subscribeConvertKitV3Tag({
+        apiBaseUrl: kitV3ApiBaseUrl,
+        apiSecret: kitApiSecret,
+        email: user.email,
+        tagId: kitTagId,
+      });
+
+  json(res, result.statusCode, result.body);
+  } catch (error) {
+    console.error("[Kit] Unexpected subscriber sync error.", error);
+    json(res, 500, {
+      error: "Unexpected Kit subscriber sync error.",
+      message: error instanceof Error ? error.message : "Unknown error.",
+    });
+  }
 }

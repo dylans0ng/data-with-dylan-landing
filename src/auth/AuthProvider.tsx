@@ -16,6 +16,10 @@ import {
   type AuthContextValue,
   type AuthResult,
 } from "./authContext";
+import {
+  ACCOUNT_EXISTS_ERROR_MESSAGE,
+  checkAccountExists,
+} from "../services/accountExists";
 
 function buildAuthRedirect(redirectTo: string): string {
   const callbackUrl = new URL("/auth/callback", window.location.origin);
@@ -43,9 +47,17 @@ async function syncKitSubscriber(session: Session): Promise<void> {
     body: JSON.stringify({ topicSlug: "python-fundamentals" }),
   });
 
-  if (response.ok) {
+  const payload = await response.json().catch(() => ({}));
+
+  if (response.ok && payload.synced === true) {
     window.localStorage.setItem(syncKey, "synced");
+    return;
   }
+
+  console.warn(
+    "[Kit] Subscriber sync did not complete.",
+    JSON.stringify({ status: response.status, payload }, null, 2)
+  );
 }
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
@@ -115,8 +127,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       emailListOptIn: boolean
     ): Promise<AuthResult> => {
       const client = getSupabaseClient();
+      const normalizedEmail = email.trim().toLowerCase();
+
+      if (await checkAccountExists(normalizedEmail)) {
+        throw new Error(ACCOUNT_EXISTS_ERROR_MESSAGE);
+      }
+
       const { data, error } = await client.auth.signUp({
-        email,
+        email: normalizedEmail,
         password,
         options: {
           data: {
@@ -129,6 +147,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
       if (error) {
         throw error;
+      }
+
+      if (Array.isArray(data.user?.identities) && data.user.identities.length === 0) {
+        throw new Error(ACCOUNT_EXISTS_ERROR_MESSAGE);
       }
 
       return {

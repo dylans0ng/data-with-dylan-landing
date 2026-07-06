@@ -10,7 +10,8 @@ For frontend-only work:
 npm run dev
 ```
 
-For the full local flow, including `/api/resource-download` and `/api/sync-kit`:
+For the full local flow, including `/api/resource-download`,
+`/api/subscribe-kit`, and `/api/sync-kit`:
 
 ```txt
 npm run dev:vercel
@@ -67,18 +68,50 @@ Add the environment variables above in your Vercel project settings. The `VITE_`
 The backend routes are:
 
 ```txt
+/api/account-exists
 /api/resource-download
+/api/subscribe-kit
 /api/sync-kit
 ```
+
+`/api/account-exists` uses the Supabase service role key server-side to show a
+clear signup error when someone tries to create an account with an email that
+already exists.
 
 ## Kit
 
 Add these values locally and in Vercel:
 
 ```txt
-KIT_API_SECRET=
+KIT_API_KEY=
+KIT_FORM_ID=
 KIT_PYTHON_BASICS_TAG_ID=
-KIT_API_BASE_URL=https://api.convertkit.com/v3
+KIT_SQL_TAG_ID=
+KIT_V4_API_BASE_URL=https://api.kit.com/v4
 ```
 
-The app syncs signed-in users to the `Python-Basics` tag through `/api/sync-kit`. If the Kit values are missing, account access still works and the sync is skipped.
+`KIT_API_KEY` should be a Kit V4 API key from the Developer settings in your
+Kit account. The app syncs confirmed, signed-in users to the `Python-Basics` tag
+through `/api/sync-kit`. The homepage newsletter form syncs subscribers through
+`/api/subscribe-kit` and applies the Python and/or SQL tag based on the selected
+topics. `KIT_FORM_ID` should match the Kit form you used for the previous
+homepage signup, so form confirmation and incentive email behavior is preserved.
+
+If the Kit values are missing, account access still works and the authenticated
+signup sync is skipped. The homepage form requires either the V4 values above or
+the temporary V3 fallback values below.
+
+For older ConvertKit V3 setups, the Kit routes still support these fallback
+values during migration:
+
+```txt
+KIT_API_SECRET=
+KIT_API_BASE_URL=https://api.convertkit.com/v3
+VITE_CONVERTKIT_API_KEY=
+VITE_CONVERTKIT_FORM_ID=
+VITE_CONVERTKIT_PYTHON_TAG_ID=
+VITE_CONVERTKIT_SQL_TAG_ID=
+```
+
+After the V4 route is verified in production, remove the `VITE_CONVERTKIT_*`
+fallback values from Vercel so the browser no longer receives Kit API config.

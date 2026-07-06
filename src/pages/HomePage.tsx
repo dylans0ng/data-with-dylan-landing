@@ -4,6 +4,8 @@ import SiteLayout from "../components/layout/SiteLayout";
 
 const TOPIC_PREFS_ERROR =
   "We're having trouble saving your topic preferences. Please try again later.";
+const SUBSCRIBE_SUCCESS_MESSAGE =
+  "Success! Check your inbox to confirm you're on the list.";
 
 const parsePositiveIntEnv = (value: unknown): number | null => {
   if (value === undefined || value === null || value === "") {
@@ -105,13 +107,111 @@ const HomePage: React.FC = () => {
   const validatedPythonTagId = parsePositiveIntEnv(rawPythonTagId);
 
   useEffect(() => {
-    logDevInfo("[Kit] apiKey present?", Boolean(apiKey), apiKey ? `len=${apiKey.length}` : "missing");
-    logDevInfo("[Kit] formId present?", Boolean(formId), formId ? `len=${String(formId).length}` : "missing");
-    logDevInfo("[Kit] sqlTagId valid?", validatedSqlTagId !== null);
-    logDevInfo("[Kit] pythonTagId valid?", validatedPythonTagId !== null);
+    logDevInfo(
+      "[Kit] legacy fallback apiKey present?",
+      Boolean(apiKey),
+      apiKey ? `len=${apiKey.length}` : "missing"
+    );
+    logDevInfo(
+      "[Kit] legacy fallback formId present?",
+      Boolean(formId),
+      formId ? `len=${String(formId).length}` : "missing"
+    );
+    logDevInfo("[Kit] legacy fallback sqlTagId valid?", validatedSqlTagId !== null);
+    logDevInfo(
+      "[Kit] legacy fallback pythonTagId valid?",
+      validatedPythonTagId !== null
+    );
   }, [apiKey, formId, logDevInfo, validatedSqlTagId, validatedPythonTagId]);
 
   const isFormValid = interestSql || interestPython;
+
+  const resetJoinForm = () => {
+    setFirstName("");
+    setEmail("");
+    setInterestPython(false);
+    setInterestSql(false);
+    setEmailError("");
+    setCheckboxError("");
+  };
+
+  const subscribeWithLegacyConvertKit = async (
+    trimmedEmail: string,
+    trimmedFirstName: string
+  ): Promise<{ ok: true } | { ok: false; message: string }> => {
+    if (!apiKey || !formId) {
+      logErrorAlways("[Kit] Missing legacy fallback env config", {
+        apiKey: Boolean(apiKey),
+        formId: Boolean(formId),
+      });
+      return { ok: false, message: TOPIC_PREFS_ERROR };
+    }
+
+    if (interestSql && validatedSqlTagId === null) {
+      logErrorAlways(
+        "[Kit] SQL selected but VITE_CONVERTKIT_SQL_TAG_ID is missing or invalid"
+      );
+      return { ok: false, message: TOPIC_PREFS_ERROR };
+    }
+    if (interestPython && validatedPythonTagId === null) {
+      logErrorAlways(
+        "[Kit] Python selected but VITE_CONVERTKIT_PYTHON_TAG_ID is missing or invalid"
+      );
+      return { ok: false, message: TOPIC_PREFS_ERROR };
+    }
+
+    const selectedTagIds = buildSelectedTagIds(
+      interestSql,
+      interestPython,
+      validatedSqlTagId,
+      validatedPythonTagId
+    );
+
+    const requestBody: {
+      email: string;
+      first_name?: string;
+      tags: number[];
+    } = {
+      email: trimmedEmail,
+      first_name: trimmedFirstName || undefined,
+      tags: selectedTagIds,
+    };
+
+    logDevInfo("[Kit] Using legacy fallback with tags:", selectedTagIds);
+
+    const response = await fetch(
+      `https://api.convertkit.com/v3/forms/${formId}/subscribe?api_key=${apiKey}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        redirect: "manual",
+        body: JSON.stringify(requestBody),
+      }
+    );
+
+    if (
+      response.type === "opaqueredirect" ||
+      (response.status >= 300 && response.status < 400)
+    ) {
+      return {
+        ok: false,
+        message: "Configuration error: Please verify your Kit API settings.",
+      };
+    }
+
+    const data = await response.json().catch(() => ({}));
+
+    if (response.ok && data.subscription) {
+      return { ok: true };
+    }
+
+    return {
+      ok: false,
+      message: data.message || TOPIC_PREFS_ERROR,
+    };
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -124,16 +224,8 @@ const HomePage: React.FC = () => {
       setCheckboxError("");
     }
 
-    if (!apiKey || !formId) {
-      logErrorAlways("[Kit] Missing env config", { apiKey: Boolean(apiKey), formId: Boolean(formId) });
-      setSubmitStatus({
-        type: "error",
-        message: "Configuration error: Please check your Kit API key and Form ID.",
-      });
-      return;
-    }
-
     const trimmedEmail = email.trim();
+    const trimmedFirstName = firstName.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!trimmedEmail) {
       setEmailError("Email is required");
@@ -153,86 +245,92 @@ const HomePage: React.FC = () => {
       return;
     }
 
-    if (interestSql && validatedSqlTagId === null) {
-      logErrorAlways("[Kit] SQL selected but VITE_CONVERTKIT_SQL_TAG_ID is missing or invalid");
-      setSubmitStatus({ type: "error", message: TOPIC_PREFS_ERROR });
-      return;
-    }
-    if (interestPython && validatedPythonTagId === null) {
-      logErrorAlways("[Kit] Python selected but VITE_CONVERTKIT_PYTHON_TAG_ID is missing or invalid");
-      setSubmitStatus({ type: "error", message: TOPIC_PREFS_ERROR });
-      return;
-    }
-
-    const selectedTagIds = buildSelectedTagIds(
-      interestSql,
-      interestPython,
-      validatedSqlTagId,
-      validatedPythonTagId
-    );
-
     setIsSubmitting(true);
     setSubmitStatus({ type: null, message: "" });
 
     try {
-      const requestBody: {
-        email: string;
-        first_name?: string;
-        tags: number[];
-      } = {
-        email: trimmedEmail,
-        first_name: firstName.trim() || undefined,
-        tags: selectedTagIds,
-      };
-
-      logDevInfo("[Kit] Subscribing with tags:", selectedTagIds);
-
-      const response = await fetch(
-        `https://api.convertkit.com/v3/forms/${formId}/subscribe?api_key=${apiKey}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+      const response = await fetch("/api/subscribe-kit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: trimmedEmail,
+          firstName: trimmedFirstName || undefined,
+          interests: {
+            python: interestPython,
+            sql: interestSql,
           },
-          redirect: "manual",
-          body: JSON.stringify(requestBody),
-        }
-      );
+        }),
+      });
 
-      if (response.type === "opaqueredirect" || (response.status >= 300 && response.status < 400)) {
+      const data = await response.json().catch(() => ({}));
+
+      if (response.ok && data.synced === true) {
+        setSubmitStatus({
+          type: "success",
+          message: SUBSCRIBE_SUCCESS_MESSAGE,
+        });
+        resetJoinForm();
+        return;
+      }
+
+      const shouldTryLegacyFallback =
+        response.status === 404 || response.status >= 500;
+
+      if (shouldTryLegacyFallback) {
+        logDevInfo("[Kit] Server subscribe failed; trying legacy fallback.", data);
+        const legacyResult = await subscribeWithLegacyConvertKit(
+          trimmedEmail,
+          trimmedFirstName
+        );
+
+        if (legacyResult.ok) {
+          setSubmitStatus({
+            type: "success",
+            message: SUBSCRIBE_SUCCESS_MESSAGE,
+          });
+          resetJoinForm();
+          return;
+        }
+
         setSubmitStatus({
           type: "error",
-          message: "Configuration error: Please verify your Kit API settings.",
+          message: legacyResult.message,
         });
         return;
       }
 
-      const data = await response.json();
-
-      if (response.ok && data.subscription) {
-        setSubmitStatus({
-          type: "success",
-          message: "Success! Check your inbox to confirm you're on the list.",
-        });
-        setFirstName("");
-        setEmail("");
-        setInterestPython(false);
-        setInterestSql(false);
-        setEmailError("");
-        setCheckboxError("");
-      } else {
-        const errorMessage =
-          data.message || "Something went wrong. Please try again.";
-        setSubmitStatus({
-          type: "error",
-          message: errorMessage,
-        });
-      }
-    } catch {
       setSubmitStatus({
         type: "error",
-        message: "Network error. Please check your connection and try again.",
+        message: data.error || TOPIC_PREFS_ERROR,
       });
+    } catch {
+      try {
+        const legacyResult = await subscribeWithLegacyConvertKit(
+          trimmedEmail,
+          trimmedFirstName
+        );
+
+        if (legacyResult.ok) {
+          setSubmitStatus({
+            type: "success",
+            message: SUBSCRIBE_SUCCESS_MESSAGE,
+          });
+          resetJoinForm();
+          return;
+        }
+
+        setSubmitStatus({
+          type: "error",
+          message: legacyResult.message,
+        });
+      } catch {
+        setSubmitStatus({
+          type: "error",
+          message: "Network error. Please check your connection and try again.",
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
