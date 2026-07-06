@@ -18,6 +18,8 @@ const FormatChooserCard: React.FC<FormatChooserCardProps> = ({
   format,
   lessonCount,
 }) => {
+  const lessonLabel = lessonCount === 1 ? "lesson" : "lessons";
+
   return (
     <article className="resource-card format-chooser-card">
       <div className="resource-icon" aria-hidden="true">
@@ -25,7 +27,9 @@ const FormatChooserCard: React.FC<FormatChooserCardProps> = ({
       </div>
       <h3>{FORMAT_LABELS[format]}</h3>
       <p>{FORMAT_DESCRIPTIONS[format]}</p>
-      <p className="topic-card-meta">{lessonCount} lessons</p>
+      <p className="topic-card-meta">
+        {lessonCount} {lessonLabel}
+      </p>
       <Link
         to={`/resources/${topicSlug}/${format}`}
         className="btn btn-secondary topic-card-cta"

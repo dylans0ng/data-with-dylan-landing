@@ -6,9 +6,15 @@ import { requestResourceDownloadUrl } from "../../services/resourceDownloads";
 
 interface AccessCTAProps {
   lesson: LessonResource;
+  collectionTitle: string;
+  collectionPath: string;
 }
 
-const AccessCTA: React.FC<AccessCTAProps> = ({ lesson }) => {
+const AccessCTA: React.FC<AccessCTAProps> = ({
+  lesson,
+  collectionTitle,
+  collectionPath,
+}) => {
   const location = useLocation();
   const { isConfigured, isLoading, session, user } = useAuth();
   const [downloadError, setDownloadError] = useState("");
@@ -40,6 +46,37 @@ const AccessCTA: React.FC<AccessCTAProps> = ({ lesson }) => {
     } finally {
       setIsDownloading(false);
     }
+  }
+
+  if (lesson.accessLevel === "protected_pending") {
+    return (
+      <div className="access-cta access-cta--pending">
+        <button type="button" className="btn btn-primary" disabled>
+          Full PDF access coming soon
+        </button>
+        <p className="access-cta-note">
+          Public previews are available now. Full {collectionTitle} PDFs will be
+          connected after protected account access is ready.
+        </p>
+        <Link to="/#join" className="btn btn-ghost access-cta-secondary">
+          Get notified when resources are ready
+        </Link>
+      </div>
+    );
+  }
+
+  if (lesson.accessLevel !== "account_required") {
+    return (
+      <div className="access-cta">
+        <p className="access-cta-note">
+          This public preview is available now. Full PDF downloads are not
+          enabled for this resource.
+        </p>
+        <Link to={collectionPath} className="btn btn-ghost access-cta-secondary">
+          View full library
+        </Link>
+      </div>
+    );
   }
 
   if (!isConfigured) {
@@ -76,7 +113,7 @@ const AccessCTA: React.FC<AccessCTAProps> = ({ lesson }) => {
           Create a free account to download
         </Link>
         <p id="access-cta-note" className="access-cta-note">
-          One free account unlocks the entire Python Fundamentals library.
+          One free account unlocks the full {collectionTitle} library.
         </p>
         <Link
           to={`/login?${authQuery}`}
@@ -99,14 +136,11 @@ const AccessCTA: React.FC<AccessCTAProps> = ({ lesson }) => {
         {isDownloading ? "Preparing download..." : "Download PDF"}
       </button>
       <p id="access-cta-note" className="access-cta-note">
-        Signed in as {user.email}. You have access to the full Python
-        Fundamentals library.
+        Signed in as {user.email}. You have access to the full{" "}
+        {collectionTitle} library.
       </p>
       {downloadError && <p className="inline-error">{downloadError}</p>}
-      <Link
-        to="/resources/python-fundamentals"
-        className="btn btn-ghost access-cta-secondary"
-      >
+      <Link to={collectionPath} className="btn btn-ghost access-cta-secondary">
         View full library
       </Link>
     </div>

@@ -10,6 +10,7 @@ const ComingSoonCard: React.FC<ComingSoonCardProps> = ({ topic }) => {
   const formatLabels = topic.formats
     .map((format) => FORMAT_LABELS[format])
     .join(" · ");
+  const lessonLabel = topic.lessonCount === 1 ? "lesson" : "lessons";
 
   return (
     <article
@@ -26,7 +27,7 @@ const ComingSoonCard: React.FC<ComingSoonCardProps> = ({ topic }) => {
       <p>{topic.shortDescription}</p>
       {topic.lessonCount > 0 && (
         <p className="topic-card-meta">
-          {topic.lessonCount} lessons · {formatLabels}
+          {topic.lessonCount} {lessonLabel} · {formatLabels}
         </p>
       )}
       <span className="btn btn-secondary topic-card-cta topic-card-cta--disabled">

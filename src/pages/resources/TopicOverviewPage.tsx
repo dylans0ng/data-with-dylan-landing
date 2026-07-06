@@ -31,7 +31,14 @@ const TopicOverviewPage: React.FC = () => {
               ]}
             />
 
-            <p className="eyebrow">{topic.icon} {topic.title}</p>
+            <p className="eyebrow">
+              {topic.iconAsset ? (
+                <img src={topic.iconAsset} alt="" className="eyebrow-icon-image" />
+              ) : (
+                topic.icon
+              )}{" "}
+              {topic.title}
+            </p>
             <h1 className="section-title">{topic.title}</h1>
             <p className="body-copy resources-intro">{topic.overviewDescription}</p>
 

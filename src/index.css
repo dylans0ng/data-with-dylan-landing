@@ -693,6 +693,21 @@ body {
   line-height: 1;
 }
 
+.resource-icon-image {
+  display: block;
+  width: 1.15em;
+  height: 1.15em;
+  object-fit: contain;
+}
+
+.eyebrow-icon-image {
+  display: inline-block;
+  width: 1.15em;
+  height: 1.15em;
+  object-fit: contain;
+  vertical-align: -0.12em;
+}
+
 @media (min-width: 769px) {
   .resource-icon {
     font-size: 1.8rem;

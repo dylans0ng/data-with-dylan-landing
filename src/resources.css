@@ -232,6 +232,27 @@
   gap: 1.5rem;
 }
 
+.empty-collection-state {
+  max-width: 42rem;
+  padding: 1rem;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  background: rgba(15, 23, 42, 0.65);
+}
+
+.empty-collection-state h2 {
+  margin: 0 0 0.35rem;
+  color: var(--text-main);
+  font-size: 1rem;
+}
+
+.empty-collection-state p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
 .lesson-card {
   display: flex;
   flex-direction: column;
@@ -402,6 +423,14 @@
   box-shadow: var(--shadow-soft);
 }
 
+.account-section {
+  min-height: calc(100vh - 180px);
+}
+
+.account-auth-container {
+  align-items: center;
+}
+
 .auth-form {
   display: grid;
   gap: 1rem;
@@ -486,5 +515,9 @@
 
   .auth-card {
     padding: 1.15rem;
+  }
+
+  .account-section {
+    min-height: auto;
   }
 }

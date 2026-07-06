@@ -34,8 +34,8 @@ const AccountPage: React.FC = () => {
     return (
       <SiteLayout mode="resources">
         <main className="resources-main auth-main">
-          <section className="section resources-section">
-            <div className="page-container auth-container">
+          <section className="section resources-section account-section">
+            <div className="page-container auth-container account-auth-container">
               <div className="auth-card">
                 <p className="body-copy">Checking your account...</p>
               </div>
@@ -53,21 +53,14 @@ const AccountPage: React.FC = () => {
   return (
     <SiteLayout mode="resources">
       <main className="resources-main auth-main">
-        <section className="section resources-section">
-          <div className="page-container auth-container">
+        <section className="section resources-section account-section">
+          <div className="page-container auth-container account-auth-container">
             <div className="auth-card">
               <p className="eyebrow">ACCOUNT</p>
               <h1 className="section-title">Your resources are unlocked</h1>
               <p className="body-copy">
-                Signed in as <strong>{user.email}</strong>. You can download the
-                full Python Fundamentals cheat sheet and guided notes library.
+                Signed in as <strong>{user.email}</strong>.
               </p>
-
-              <ul className="card-list auth-access-list">
-                <li>Python Fundamentals cheat sheets</li>
-                <li>Python Fundamentals guided notes</li>
-                <li>Python-Basics email sequence sync</li>
-              </ul>
 
               {formError && <p className="inline-error">{formError}</p>}
 
@@ -75,9 +68,9 @@ const AccountPage: React.FC = () => {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={() => navigate("/resources/python-fundamentals")}
+                  onClick={() => navigate("/resources")}
                 >
-                  View library
+                  View resources
                 </button>
                 <button
                   type="button"

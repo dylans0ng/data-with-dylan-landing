@@ -5,14 +5,14 @@ import { FORMAT_LABELS } from "../../data/resources/types";
 interface FormatToggleProps {
   topicSlug: string;
   activeFormat: ResourceFormat;
+  formats: ResourceFormat[];
 }
 
 const FormatToggle: React.FC<FormatToggleProps> = ({
   topicSlug,
   activeFormat,
+  formats,
 }) => {
-  const formats: ResourceFormat[] = ["cheat-sheets", "guided-notes"];
-
   return (
     <div
       className="format-toggle"

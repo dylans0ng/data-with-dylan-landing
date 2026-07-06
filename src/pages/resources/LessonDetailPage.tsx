@@ -74,7 +74,11 @@ const LessonDetailPage: React.FC = () => {
               </ul>
             </div>
 
-            <AccessCTA lesson={lesson} />
+            <AccessCTA
+              lesson={lesson}
+              collectionTitle={topic.title}
+              collectionPath={`/resources/${topic.slug}`}
+            />
 
             <Link to={collectionPath} className="lesson-detail-back">
               ← Back to {formatLabel.toLowerCase()}

@@ -1,8 +1,12 @@
+import { aiWithPythonLessons } from "./ai-with-python-for-beginners";
 import { pythonFundamentalsLessons } from "./python-fundamentals";
 import { topics } from "./topics";
 import type { LessonResource, ResourceFormat, Topic } from "./types";
 
-const allLessons: LessonResource[] = [...pythonFundamentalsLessons];
+const allLessons: LessonResource[] = [
+  ...pythonFundamentalsLessons,
+  ...aiWithPythonLessons,
+];
 
 export function getAllTopics(): Topic[] {
   return [...topics].sort((a, b) => a.sortOrder - b.sortOrder);

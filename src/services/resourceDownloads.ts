@@ -9,6 +9,10 @@ export async function requestResourceDownloadUrl(
   lesson: LessonResource,
   accessToken: string
 ): Promise<string> {
+  if (!lesson.storageKey) {
+    throw new Error("This resource is not available for download yet.");
+  }
+
   const response = await fetch("/api/resource-download", {
     method: "POST",
     headers: {

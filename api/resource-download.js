@@ -1,4 +1,7 @@
-const allowedTopicSlugs = new Set(["python-fundamentals"]);
+const allowedTopicSlugs = new Set([
+  "python-fundamentals",
+  "ai-with-python-for-beginners",
+]);
 
 function json(res, statusCode, body) {
   res.statusCode = statusCode;

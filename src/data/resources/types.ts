@@ -4,7 +4,10 @@ export type ResourceFormat = "cheat-sheets" | "guided-notes";
 
 export type LessonAvailability = "published" | "coming_soon";
 
-export type AccessLevel = "preview" | "account_required";
+export type AccessLevel =
+  | "preview"
+  | "account_required"
+  | "protected_pending";
 
 export interface Topic {
   slug: string;
@@ -12,6 +15,7 @@ export interface Topic {
   status: TopicStatus;
   sortOrder: number;
   icon: string;
+  iconAsset?: string;
   shortDescription: string;
   overviewDescription: string;
   playlistUrl?: string;
@@ -27,8 +31,10 @@ export interface LessonResource {
   description: string;
   topicSlug: string;
   format: ResourceFormat;
-  storageKey: string;
-  downloadFileName: string;
+  storageKey?: string;
+  plannedStorageKey?: string;
+  sourceFileName?: string;
+  downloadFileName?: string;
   thumbnailAsset?: string;
   videoUrl?: string;
   availability: LessonAvailability;
