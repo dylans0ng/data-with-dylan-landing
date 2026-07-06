@@ -2,6 +2,7 @@ import { Navigate, useParams } from "react-router-dom";
 import SiteLayout from "../../components/layout/SiteLayout";
 import Breadcrumbs from "../../components/resources/Breadcrumbs";
 import FormatChooserCard from "../../components/resources/FormatChooserCard";
+import TopicEyebrow from "../../components/resources/TopicEyebrow";
 import {
   getPlannedLessonCountByTopicAndFormat,
   getPublishedLessonCountByTopicAndFormat,
@@ -35,22 +36,7 @@ const TopicOverviewPage: React.FC = () => {
               ]}
             />
 
-            <p className="eyebrow">
-              {topic.iconAsset ? (
-                <img
-                  src={topic.iconAsset}
-                  alt=""
-                  className={`eyebrow-icon-image${
-                    topic.slug === "sql-fundamentals"
-                      ? " eyebrow-icon-image--sql"
-                      : ""
-                  }`}
-                />
-              ) : (
-                topic.icon
-              )}{" "}
-              {topic.title}
-            </p>
+            <TopicEyebrow topic={topic} />
             <h1 className="section-title">{topic.title}</h1>
             <p className="body-copy resources-intro">{topic.overviewDescription}</p>
 

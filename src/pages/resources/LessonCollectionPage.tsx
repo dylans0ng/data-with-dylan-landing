@@ -1,10 +1,10 @@
 import { Navigate, useParams } from "react-router-dom";
-import { useAuth } from "../../auth/useAuth";
 import SiteLayout from "../../components/layout/SiteLayout";
 import Breadcrumbs from "../../components/resources/Breadcrumbs";
 import ComingSoonResourceCard from "../../components/resources/ComingSoonResourceCard";
 import FormatToggle from "../../components/resources/FormatToggle";
 import LessonCard from "../../components/resources/LessonCard";
+import TopicEyebrow from "../../components/resources/TopicEyebrow";
 import {
   getLessonsByTopicAndFormat,
   getPlannedLessonsByTopicAndFormat,
@@ -16,7 +16,6 @@ import { FORMAT_LABELS } from "../../data/resources/types";
 import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 const LessonCollectionPage: React.FC = () => {
-  const { user } = useAuth();
   const { topicSlug, format } = useParams<{
     topicSlug: string;
     format: string;
@@ -39,9 +38,6 @@ const LessonCollectionPage: React.FC = () => {
   const formatLabel = validFormat ? FORMAT_LABELS[validFormat] : "Collection";
   const resourceCount = lessons.length || plannedLessons.length;
   const resourceLabel = resourceCount === 1 ? "resource" : "resources";
-  const hasProtectedPendingResources = lessons.some(
-    (lesson) => lesson.accessLevel === "protected_pending"
-  );
 
   useDocumentTitle(topic ? `${topic.title} ${formatLabel}` : "Collection");
 
@@ -67,52 +63,13 @@ const LessonCollectionPage: React.FC = () => {
               ]}
             />
 
-            <p className="eyebrow">
-              {topic.iconAsset ? (
-                <img
-                  src={topic.iconAsset}
-                  alt=""
-                  className={`eyebrow-icon-image${
-                    topic.slug === "sql-fundamentals"
-                      ? " eyebrow-icon-image--sql"
-                      : ""
-                  }`}
-                />
-              ) : (
-                topic.icon
-              )}{" "}
-              {topic.title}
-            </p>
+            <TopicEyebrow topic={topic} />
             <h1 className="section-title">{formatLabel}</h1>
             <p className="body-copy resources-intro">
               {lessons.length > 0
                 ? `${lessons.length} ${resourceLabel} published. Browse each resource below.`
                 : `${resourceCount} planned ${resourceLabel}. These resources are not published yet.`}
             </p>
-
-            <div className="library-access-banner">
-              {topic.status === "partial" ? (
-                <p>
-                  SQL Foundations is launching in stages. The SQL Joins Cheat
-                  Sheet is available now; guided notes and more SQL resources
-                  are coming later.
-                </p>
-              ) : hasProtectedPendingResources ? (
-                <p>
-                  Previews are public. Full {topic.title} PDFs will be available
-                  after protected account access is connected.
-                </p>
-              ) : user ? (
-                <p>
-                  Your account unlocks the full {topic.title} resource library.
-                </p>
-              ) : (
-                <p>
-                  Previews are public. Create a free account from any resource
-                  page to unlock the full {topic.title} library.
-                </p>
-              )}
-            </div>
 
             {publishedFormats.length > 1 && lessons.length > 0 && (
               <FormatToggle

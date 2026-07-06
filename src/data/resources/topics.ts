@@ -31,6 +31,8 @@ export const topics: Topic[] = [
       "Start with SQL joins now. Guided notes and more SQL topics are still in progress.",
     overviewDescription:
       "Build practical SQL confidence one topic at a time. The SQL Joins cheat sheet is available now, with guided notes and additional SQL topics coming later.",
+    playlistUrl:
+      "https://youtube.com/playlist?list=PL8QLO4tKii7cYqWLhzVDfLYmWTXa7DcLt&si=uzMKMYdT07diJmIm",
     formats: ["cheat-sheets", "guided-notes"],
     lessonCount: 1,
     availableResourceCount: 1,
