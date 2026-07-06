@@ -1,11 +1,13 @@
 import { aiWithPythonLessons } from "./ai-with-python-for-beginners";
 import { pythonFundamentalsLessons } from "./python-fundamentals";
+import { sqlFundamentalsLessons } from "./sql-fundamentals";
 import { topics } from "./topics";
 import type { LessonResource, ResourceFormat, Topic } from "./types";
 
 const allLessons: LessonResource[] = [
   ...pythonFundamentalsLessons,
   ...aiWithPythonLessons,
+  ...sqlFundamentalsLessons,
 ];
 
 export function getAllTopics(): Topic[] {
@@ -36,6 +38,43 @@ export function getLessonsByTopicAndFormat(
         lesson.availability === "published"
     )
     .sort((a, b) => a.lessonNumber - b.lessonNumber);
+}
+
+export function getPlannedLessonsByTopicAndFormat(
+  topicSlug: string,
+  format: ResourceFormat
+): LessonResource[] {
+  return allLessons
+    .filter(
+      (lesson) =>
+        lesson.topicSlug === topicSlug &&
+        lesson.format === format &&
+        lesson.availability === "coming_soon"
+    )
+    .sort((a, b) => a.lessonNumber - b.lessonNumber);
+}
+
+export function getPublishedLessonCountByTopicAndFormat(
+  topicSlug: string,
+  format: ResourceFormat
+): number {
+  return getLessonsByTopicAndFormat(topicSlug, format).length;
+}
+
+export function getPlannedLessonCountByTopicAndFormat(
+  topicSlug: string,
+  format: ResourceFormat
+): number {
+  return getPlannedLessonsByTopicAndFormat(topicSlug, format).length;
+}
+
+export function getPublishedFormatsByTopic(
+  topicSlug: string,
+  formats: ResourceFormat[]
+): ResourceFormat[] {
+  return formats.filter(
+    (format) => getPublishedLessonCountByTopicAndFormat(topicSlug, format) > 0
+  );
 }
 
 export function getLesson(

@@ -1,5 +1,6 @@
 import openAiLogo from "../../assets/resources/openai-logo.png";
 import pythonLogo from "../../assets/resources/python-logo.png";
+import sqlLogo from "../../assets/resources/sql-logo.png";
 import type { Topic } from "./types";
 
 export const topics: Topic[] = [
@@ -22,15 +23,19 @@ export const topics: Topic[] = [
   {
     slug: "sql-fundamentals",
     title: "SQL Foundations",
-    status: "coming_soon",
+    status: "partial",
     sortOrder: 3,
+    iconAsset: sqlLogo,
     icon: "🗄️",
     shortDescription:
-      "SELECTs, JOINs, GROUP BY, and the query patterns you'll see in interviews and real projects.",
+      "Start with SQL joins now. Guided notes and more SQL topics are still in progress.",
     overviewDescription:
-      "SQL companion resources are on the way. Join the newsletter to be first in line when they launch.",
-    formats: ["cheat-sheets"],
-    lessonCount: 0,
+      "Build practical SQL confidence one topic at a time. The SQL Joins cheat sheet is available now, with guided notes and additional SQL topics coming later.",
+    formats: ["cheat-sheets", "guided-notes"],
+    lessonCount: 1,
+    availableResourceCount: 1,
+    comingSoonDescription:
+      "Upcoming resources will cover SELECT statements, WHERE filters, GROUP BY, aggregate functions, subqueries, and window functions.",
   },
   {
     slug: "ai-with-python-for-beginners",

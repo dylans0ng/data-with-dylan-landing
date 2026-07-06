@@ -45,6 +45,9 @@ export default async function handler(req, res) {
     process.env.KIT_PYTHON_BASICS_TAG_ID ??
       process.env.VITE_CONVERTKIT_PYTHON_TAG_ID
   );
+  const kitFormId = normalizeTagId(
+    process.env.KIT_FORM_ID ?? process.env.VITE_CONVERTKIT_FORM_ID
+  );
   const kitV3ApiBaseUrl =
     process.env.KIT_API_BASE_URL ?? defaultConvertKitV3ApiBaseUrl;
   const kitV4ApiBaseUrl =
@@ -96,6 +99,7 @@ export default async function handler(req, res) {
         apiKey: kitApiKey,
         email: user.email,
         tagIds: [kitTagId],
+        formId: kitFormId,
       })
     : await subscribeConvertKitV3Tag({
         apiBaseUrl: kitV3ApiBaseUrl,

@@ -2,10 +2,13 @@ import { Navigate, useParams } from "react-router-dom";
 import { useAuth } from "../../auth/useAuth";
 import SiteLayout from "../../components/layout/SiteLayout";
 import Breadcrumbs from "../../components/resources/Breadcrumbs";
+import ComingSoonResourceCard from "../../components/resources/ComingSoonResourceCard";
 import FormatToggle from "../../components/resources/FormatToggle";
 import LessonCard from "../../components/resources/LessonCard";
 import {
   getLessonsByTopicAndFormat,
+  getPlannedLessonsByTopicAndFormat,
+  getPublishedFormatsByTopic,
   getTopicBySlug,
   isValidFormat,
 } from "../../data/resources";
@@ -25,9 +28,17 @@ const LessonCollectionPage: React.FC = () => {
     topicSlug && validFormat
       ? getLessonsByTopicAndFormat(topicSlug, validFormat)
       : [];
+  const plannedLessons =
+    topicSlug && validFormat
+      ? getPlannedLessonsByTopicAndFormat(topicSlug, validFormat)
+      : [];
+  const publishedFormats = topic
+    ? getPublishedFormatsByTopic(topic.slug, topic.formats)
+    : [];
 
   const formatLabel = validFormat ? FORMAT_LABELS[validFormat] : "Collection";
-  const lessonLabel = lessons.length === 1 ? "lesson" : "lessons";
+  const resourceCount = lessons.length || plannedLessons.length;
+  const resourceLabel = resourceCount === 1 ? "resource" : "resources";
   const hasProtectedPendingResources = lessons.some(
     (lesson) => lesson.accessLevel === "protected_pending"
   );
@@ -37,7 +48,7 @@ const LessonCollectionPage: React.FC = () => {
   if (
     !topic ||
     !validFormat ||
-    topic.status !== "available" ||
+    topic.status === "coming_soon" ||
     !topic.formats.includes(validFormat)
   ) {
     return <Navigate to="/resources" replace />;
@@ -57,16 +68,36 @@ const LessonCollectionPage: React.FC = () => {
             />
 
             <p className="eyebrow">
-              {topic.icon} {topic.title}
+              {topic.iconAsset ? (
+                <img
+                  src={topic.iconAsset}
+                  alt=""
+                  className={`eyebrow-icon-image${
+                    topic.slug === "sql-fundamentals"
+                      ? " eyebrow-icon-image--sql"
+                      : ""
+                  }`}
+                />
+              ) : (
+                topic.icon
+              )}{" "}
+              {topic.title}
             </p>
             <h1 className="section-title">{formatLabel}</h1>
             <p className="body-copy resources-intro">
-              {lessons.length} {lessonLabel} in sequence. Browse each resource
-              below.
+              {lessons.length > 0
+                ? `${lessons.length} ${resourceLabel} published. Browse each resource below.`
+                : `${resourceCount} planned ${resourceLabel}. These resources are not published yet.`}
             </p>
 
             <div className="library-access-banner">
-              {hasProtectedPendingResources ? (
+              {topic.status === "partial" ? (
+                <p>
+                  SQL Foundations is launching in stages. The SQL Joins Cheat
+                  Sheet is available now; guided notes and more SQL resources
+                  are coming later.
+                </p>
+              ) : hasProtectedPendingResources ? (
                 <p>
                   Previews are public. Full {topic.title} PDFs will be available
                   after protected account access is connected.
@@ -83,16 +114,24 @@ const LessonCollectionPage: React.FC = () => {
               )}
             </div>
 
-            <FormatToggle
-              topicSlug={topic.slug}
-              activeFormat={validFormat}
-              formats={topic.formats}
-            />
+            {publishedFormats.length > 1 && lessons.length > 0 && (
+              <FormatToggle
+                topicSlug={topic.slug}
+                activeFormat={validFormat}
+                formats={publishedFormats}
+              />
+            )}
 
             {lessons.length > 0 ? (
               <div className="lesson-list">
                 {lessons.map((lesson) => (
                   <LessonCard key={lesson.id} lesson={lesson} />
+                ))}
+              </div>
+            ) : plannedLessons.length > 0 ? (
+              <div className="lesson-list">
+                {plannedLessons.map((lesson) => (
+                  <ComingSoonResourceCard key={lesson.id} lesson={lesson} />
                 ))}
               </div>
             ) : (

@@ -53,6 +53,7 @@ python-fundamentals/guided-notes/Python_File_IO_Guided_Notes.pdf
 python-fundamentals/guided-notes/Python_Pandas_DataFrames_Guided_Notes.pdf
 ai-with-python-for-beginners/cheat-sheets/Call_Your_First_AI_Model_Cheat_Sheet.pdf
 ai-with-python-for-beginners/guided-notes/Call_Your_First_AI_Model_in_Python_Guided_Notes.pdf
+sql-fundamentals/cheat-sheets/SQL_Joins_Cheat_Sheet.pdf
 ```
 
 In Supabase Auth, add your deployed Vercel URL and local dev URL to allowed redirect URLs. The callback path is:

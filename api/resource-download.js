@@ -1,6 +1,7 @@
 const allowedTopicSlugs = new Set([
   "python-fundamentals",
   "ai-with-python-for-beginners",
+  "sql-fundamentals",
 ]);
 
 function json(res, statusCode, body) {

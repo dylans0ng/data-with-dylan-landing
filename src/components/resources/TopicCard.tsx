@@ -12,24 +12,51 @@ const TopicCard: React.FC<TopicCardProps> = ({ topic }) => {
     .map((format) => FORMAT_LABELS[format])
     .join(" · ");
   const lessonLabel = topic.lessonCount === 1 ? "lesson" : "lessons";
+  const availableResourceLabel =
+    topic.availableResourceCount === 1 ? "resource" : "resources";
 
   return (
     <article className="resource-card topic-card">
       <div className="resource-icon" aria-hidden="true">
         {topic.iconAsset ? (
-          <img src={topic.iconAsset} alt="" className="resource-icon-image" />
+          <img
+            src={topic.iconAsset}
+            alt=""
+            className={`resource-icon-image${
+              topic.slug === "sql-fundamentals" ? " resource-icon-image--sql" : ""
+            }`}
+          />
         ) : (
           topic.icon
         )}
       </div>
       <div className="topic-card-badges">
-        <StatusBadge variant="available" />
+        {topic.status === "partial" ? (
+          <>
+            <StatusBadge variant="new_resource" />
+            <StatusBadge variant="more_coming" />
+          </>
+        ) : (
+          <>
+            <StatusBadge variant="available" />
+            {topic.slug === "ai-with-python-for-beginners" && (
+              <StatusBadge variant="more_coming" />
+            )}
+          </>
+        )}
       </div>
       <h3>{topic.title}</h3>
       <p>{topic.shortDescription}</p>
-      <p className="topic-card-meta">
-        {topic.lessonCount} {lessonLabel} · {formatLabels}
-      </p>
+      {topic.status === "partial" && topic.availableResourceCount ? (
+        <p className="topic-card-meta">
+          {topic.availableResourceCount} {availableResourceLabel} available ·
+          More coming
+        </p>
+      ) : (
+        <p className="topic-card-meta">
+          {topic.lessonCount} {lessonLabel} · {formatLabels}
+        </p>
+      )}
       <Link
         to={`/resources/${topic.slug}`}
         className="btn btn-secondary topic-card-cta"

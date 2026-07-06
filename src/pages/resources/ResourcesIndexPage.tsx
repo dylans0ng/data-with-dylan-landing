@@ -23,7 +23,7 @@ const ResourcesIndexPage: React.FC = () => {
 
             <div className="cards-grid resources-topic-grid">
               {topics.map((topic) =>
-                topic.status === "available" ? (
+                topic.status === "available" || topic.status === "partial" ? (
                   <TopicCard key={topic.slug} topic={topic} />
                 ) : (
                   <ComingSoonCard key={topic.slug} topic={topic} />

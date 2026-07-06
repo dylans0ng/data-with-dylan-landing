@@ -1,4 +1,4 @@
-export type TopicStatus = "available" | "coming_soon";
+export type TopicStatus = "available" | "partial" | "coming_soon";
 
 export type ResourceFormat = "cheat-sheets" | "guided-notes";
 
@@ -21,6 +21,8 @@ export interface Topic {
   playlistUrl?: string;
   formats: ResourceFormat[];
   lessonCount: number;
+  availableResourceCount?: number;
+  comingSoonDescription?: string;
 }
 
 export interface LessonResource {
@@ -40,6 +42,7 @@ export interface LessonResource {
   availability: LessonAvailability;
   accessLevel: AccessLevel;
   includedItems: string[];
+  comingSoonCopy?: string;
 }
 
 export const FORMAT_LABELS: Record<ResourceFormat, string> = {

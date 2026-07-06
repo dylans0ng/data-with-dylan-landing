@@ -28,7 +28,13 @@ const LessonDetailPage: React.FC = () => {
 
   useDocumentTitle(lesson?.title ?? "Lesson");
 
-  if (!topic || !validFormat || !lesson || topic.status !== "available") {
+  if (
+    !topic ||
+    !validFormat ||
+    !lesson ||
+    topic.status === "coming_soon" ||
+    lesson.availability !== "published"
+  ) {
     return <Navigate to="/resources" replace />;
   }
 

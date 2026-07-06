@@ -93,6 +93,18 @@
   border: 1px solid var(--card-border);
 }
 
+.status-badge--new_resource {
+  background: rgba(34, 197, 94, 0.15);
+  color: #86efac;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.status-badge--more_coming {
+  background: rgba(14, 165, 233, 0.14);
+  color: #7dd3fc;
+  border: 1px solid rgba(14, 165, 233, 0.3);
+}
+
 .status-badge--cheat-sheets,
 .status-badge--guided-notes {
   background: var(--accent-soft);
@@ -177,6 +189,11 @@
   line-height: 1.55;
 }
 
+.library-access-banner--partial {
+  border-color: rgba(14, 165, 233, 0.35);
+  background: rgba(14, 165, 233, 0.11);
+}
+
 .format-chooser-grid {
   margin-top: 0.5rem;
 }
@@ -256,6 +273,10 @@
 .lesson-card {
   display: flex;
   flex-direction: column;
+}
+
+.lesson-card--coming-soon {
+  border-color: rgba(148, 163, 184, 0.24);
 }
 
 .lesson-card-header {
@@ -381,6 +402,12 @@
 
 .lesson-detail-includes {
   margin-bottom: 2rem;
+}
+
+.future-resource-state {
+  max-width: 42rem;
+  margin-top: 2rem;
+  padding-top: 0.25rem;
 }
 
 .access-cta {

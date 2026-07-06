@@ -1,11 +1,14 @@
 import { Link } from "react-router-dom";
 import type { ResourceFormat } from "../../data/resources/types";
 import { FORMAT_DESCRIPTIONS, FORMAT_LABELS } from "../../data/resources/types";
+import StatusBadge from "./StatusBadge";
 
 interface FormatChooserCardProps {
   topicSlug: string;
   format: ResourceFormat;
-  lessonCount: number;
+  publishedCount: number;
+  plannedCount?: number;
+  comingSoonCopy?: string;
 }
 
 const FORMAT_ICONS: Record<ResourceFormat, string> = {
@@ -16,26 +19,43 @@ const FORMAT_ICONS: Record<ResourceFormat, string> = {
 const FormatChooserCard: React.FC<FormatChooserCardProps> = ({
   topicSlug,
   format,
-  lessonCount,
+  publishedCount,
+  plannedCount = 0,
+  comingSoonCopy,
 }) => {
-  const lessonLabel = lessonCount === 1 ? "lesson" : "lessons";
+  const isAvailable = publishedCount > 0;
+  const resourceLabel = publishedCount === 1 ? "resource" : "resources";
+  const plannedLabel = plannedCount === 1 ? "resource" : "resources";
 
   return (
     <article className="resource-card format-chooser-card">
       <div className="resource-icon" aria-hidden="true">
         {FORMAT_ICONS[format]}
       </div>
+      {!isAvailable && (
+        <div className="topic-card-badges">
+          <StatusBadge variant="coming_soon" />
+        </div>
+      )}
       <h3>{FORMAT_LABELS[format]}</h3>
-      <p>{FORMAT_DESCRIPTIONS[format]}</p>
+      <p>{comingSoonCopy ?? FORMAT_DESCRIPTIONS[format]}</p>
       <p className="topic-card-meta">
-        {lessonCount} {lessonLabel}
+        {isAvailable
+          ? `${publishedCount} ${resourceLabel}`
+          : `${plannedCount} planned ${plannedLabel}`}
       </p>
-      <Link
-        to={`/resources/${topicSlug}/${format}`}
-        className="btn btn-secondary topic-card-cta"
-      >
-        Browse {FORMAT_LABELS[format].toLowerCase()} →
-      </Link>
+      {isAvailable ? (
+        <Link
+          to={`/resources/${topicSlug}/${format}`}
+          className="btn btn-secondary topic-card-cta"
+        >
+          Browse {FORMAT_LABELS[format].toLowerCase()} →
+        </Link>
+      ) : (
+        <a href="/#join" className="btn btn-ghost topic-card-cta">
+          Get notified
+        </a>
+      )}
     </article>
   );
 };
