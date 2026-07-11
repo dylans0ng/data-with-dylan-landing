@@ -19,10 +19,17 @@ export interface Topic {
   shortDescription: string;
   overviewDescription: string;
   playlistUrl?: string;
+  playlistComingSoon?: boolean;
   formats: ResourceFormat[];
   lessonCount: number;
+  availableLessonCount?: number;
+  mysteryLessonCount?: number;
   availableResourceCount?: number;
+  comingSoonHeading?: string;
   comingSoonDescription?: string;
+  formatIntroCopy?: string;
+  formatComingSoonCopy?: Partial<Record<ResourceFormat, string>>;
+  formatTeaserCopy?: string;
 }
 
 export interface LessonResource {

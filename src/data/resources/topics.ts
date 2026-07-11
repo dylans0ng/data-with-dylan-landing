@@ -1,4 +1,5 @@
 import openAiLogo from "../../assets/resources/openai-logo.png";
+import pandasLogo from "../../assets/resources/pandas-logo.png";
 import pythonLogo from "../../assets/resources/python-logo.png";
 import sqlLogo from "../../assets/resources/sql-logo.png";
 import type { Topic } from "./types";
@@ -21,10 +22,34 @@ export const topics: Topic[] = [
     lessonCount: 7,
   },
   {
+    slug: "pandas-fundamentals-crash-course",
+    title: "Pandas Fundamentals Crash Course",
+    status: "partial",
+    sortOrder: 2,
+    icon: "Pandas",
+    iconAsset: pandasLogo,
+    shortDescription:
+      "Start with loading files into Pandas. The next nine lessons are staying under wraps—for now.",
+    overviewDescription:
+      "Begin this Pandas crash course with loading files into your local Python program for further analysis. Download the cheat sheet or work through the guided notes, then check back as nine lessons are revealed.",
+    playlistComingSoon: true,
+    formats: ["cheat-sheets", "guided-notes"],
+    lessonCount: 10,
+    availableLessonCount: 1,
+    mysteryLessonCount: 9,
+    comingSoonHeading: "Nine lessons are coming",
+    comingSoonDescription:
+      "Lesson 1 is available now. The remaining nine topics will stay under wraps until each new lesson is ready to be revealed.",
+    formatIntroCopy:
+      "Both supplemental formats are available for Lesson 1 - pick the one that fits how you learn best.",
+    formatTeaserCopy:
+      "9 mystery lessons coming · New topics will be revealed as they’re published.",
+  },
+  {
     slug: "sql-fundamentals",
     title: "SQL Foundations",
     status: "partial",
-    sortOrder: 3,
+    sortOrder: 4,
     iconAsset: sqlLogo,
     icon: "🗄️",
     shortDescription:
@@ -36,14 +61,21 @@ export const topics: Topic[] = [
     formats: ["cheat-sheets", "guided-notes"],
     lessonCount: 1,
     availableResourceCount: 1,
+    comingSoonHeading: "More SQL topics are coming",
     comingSoonDescription:
       "Upcoming resources will cover SELECT statements, WHERE filters, GROUP BY, aggregate functions, subqueries, and window functions.",
+    formatIntroCopy:
+      "Start with the format that is published now, and see what is planned next.",
+    formatComingSoonCopy: {
+      "guided-notes":
+        "Step-by-step SQL joins notes are planned, but not published yet.",
+    },
   },
   {
     slug: "ai-with-python-for-beginners",
     title: "AI with Python for Beginners",
     status: "available",
-    sortOrder: 2,
+    sortOrder: 3,
     icon: "AI",
     iconAsset: openAiLogo,
     shortDescription:

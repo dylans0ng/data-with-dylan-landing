@@ -40,24 +40,36 @@ const TopicOverviewPage: React.FC = () => {
             <h1 className="section-title">{topic.title}</h1>
             <p className="body-copy resources-intro">{topic.overviewDescription}</p>
 
-            {topic.playlistUrl && (
+            {(topic.playlistUrl || topic.playlistComingSoon) && (
               <p className="resources-playlist-link">
-                <a
-                  href={topic.playlistUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="btn btn-ghost"
-                >
-                  Watch on YouTube
-                </a>
+                {topic.playlistUrl ? (
+                  <a
+                    href={topic.playlistUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn btn-ghost"
+                  >
+                    Watch on YouTube
+                  </a>
+                ) : (
+                  <button
+                    type="button"
+                    className="btn btn-ghost"
+                    disabled
+                    aria-label="Watch on YouTube (coming soon)"
+                  >
+                    Watch on YouTube
+                  </button>
+                )}
               </p>
             )}
 
             <h2 className="resources-subheading">Choose a format</h2>
             <p className="body-copy resources-format-intro">
               {topic.status === "partial"
-                ? "Start with the format that is published now, and see what is planned next."
-                : "Each lesson includes two companion formats - pick the one that fits how you learn best."}
+                ? topic.formatIntroCopy ??
+                  "Start with the formats published now, and see what is planned next."
+                : "Each lesson includes two supplemental formats - pick the one that fits how you learn best."}
             </p>
 
             <div className="cards-grid format-chooser-grid">
@@ -75,8 +87,8 @@ const TopicOverviewPage: React.FC = () => {
                     format
                   )}
                   comingSoonCopy={
-                    topic.status === "partial" && format === "guided-notes"
-                      ? "Step-by-step SQL joins notes are planned, but not published yet."
+                    topic.status === "partial"
+                      ? topic.formatComingSoonCopy?.[format]
                       : undefined
                   }
                 />
@@ -85,7 +97,9 @@ const TopicOverviewPage: React.FC = () => {
 
             {topic.status === "partial" && topic.comingSoonDescription && (
               <section className="future-resource-state">
-                <h2 className="resources-subheading">More SQL topics are coming</h2>
+                <h2 className="resources-subheading">
+                  {topic.comingSoonHeading ?? "More resources are coming"}
+                </h2>
                 <p className="body-copy">{topic.comingSoonDescription}</p>
               </section>
             )}

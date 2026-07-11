@@ -1,4 +1,5 @@
 import { aiWithPythonLessons } from "./ai-with-python-for-beginners";
+import { pandasFundamentalsLessons } from "./pandas-fundamentals-crash-course";
 import { pythonFundamentalsLessons } from "./python-fundamentals";
 import { sqlFundamentalsLessons } from "./sql-fundamentals";
 import { topics } from "./topics";
@@ -6,6 +7,7 @@ import type { LessonResource, ResourceFormat, Topic } from "./types";
 
 const allLessons: LessonResource[] = [
   ...pythonFundamentalsLessons,
+  ...pandasFundamentalsLessons,
   ...aiWithPythonLessons,
   ...sqlFundamentalsLessons,
 ];

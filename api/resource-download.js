@@ -1,7 +1,30 @@
 const allowedTopicSlugs = new Set([
   "python-fundamentals",
+  "pandas-fundamentals-crash-course",
   "ai-with-python-for-beginners",
   "sql-fundamentals",
+]);
+
+const allowedStorageKeys = new Set([
+  "python-fundamentals/cheat-sheets/Python_Variables_Data_Types_Cheat_Sheet.pdf",
+  "python-fundamentals/cheat-sheets/Python_Conditional_Logic_Cheat_Sheet.pdf",
+  "python-fundamentals/cheat-sheets/Python_For_While_Loops_Cheat_Sheet.pdf",
+  "python-fundamentals/cheat-sheets/Python_Lists_Sets_Tuples_Cheat_Sheet.pdf",
+  "python-fundamentals/cheat-sheets/Python_Dictionaries_Cheat_Sheet.pdf",
+  "python-fundamentals/cheat-sheets/Python_File_IO_Cheat_Sheet.pdf",
+  "python-fundamentals/cheat-sheets/Python_Dictionaries_to_Pandas_DataFrames_Cheat_Sheet.pdf",
+  "python-fundamentals/guided-notes/Python_Variables_Guided_Notes.pdf",
+  "python-fundamentals/guided-notes/Python_Conditional_Logic_Guided_Notes.pdf",
+  "python-fundamentals/guided-notes/Python_For_While_Loops_Guided_Notes.pdf",
+  "python-fundamentals/guided-notes/Python_Lists_Sets_Tuples_Guided_Notes.pdf",
+  "python-fundamentals/guided-notes/Python_Dictionaries_Guided_Notes.pdf",
+  "python-fundamentals/guided-notes/Python_File_IO_Guided_Notes.pdf",
+  "python-fundamentals/guided-notes/Python_Pandas_DataFrames_Guided_Notes.pdf",
+  "pandas-fundamentals-crash-course/cheat-sheets/How_to_Load_Files_in_Pandas_Cheat_Sheet.pdf",
+  "pandas-fundamentals-crash-course/guided-notes/How_to_Load_Files_in_Pandas_Guided_Notes.pdf",
+  "ai-with-python-for-beginners/cheat-sheets/Call_Your_First_AI_Model_Cheat_Sheet.pdf",
+  "ai-with-python-for-beginners/guided-notes/Call_Your_First_AI_Model_in_Python_Guided_Notes.pdf",
+  "sql-fundamentals/cheat-sheets/SQL_Joins_Cheat_Sheet.pdf",
 ]);
 
 function json(res, statusCode, body) {
@@ -98,6 +121,7 @@ export default async function handler(req, res) {
 
   if (
     !allowedTopicSlugs.has(topicSlug) ||
+    !allowedStorageKeys.has(storageKey) ||
     !storageKey.startsWith(`${topicSlug}/`) ||
     !storageKey.endsWith(".pdf")
   ) {

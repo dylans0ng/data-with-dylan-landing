@@ -100,6 +100,15 @@ const LessonCollectionPage: React.FC = () => {
                 </p>
               </div>
             )}
+
+            {lessons.length > 0 &&
+              topic.mysteryLessonCount &&
+              topic.formatTeaserCopy && (
+                <section className="mystery-lessons-teaser">
+                  <h2>{topic.comingSoonHeading ?? "More lessons are coming"}</h2>
+                  <p>{topic.formatTeaserCopy}</p>
+                </section>
+              )}
           </div>
         </section>
       </main>

@@ -14,6 +14,10 @@ const TopicCard: React.FC<TopicCardProps> = ({ topic }) => {
   const lessonLabel = topic.lessonCount === 1 ? "lesson" : "lessons";
   const availableResourceLabel =
     topic.availableResourceCount === 1 ? "resource" : "resources";
+  const availableLessonLabel =
+    topic.availableLessonCount === 1 ? "lesson" : "lessons";
+  const mysteryLessonLabel =
+    topic.mysteryLessonCount === 1 ? "mystery lesson" : "mystery lessons";
 
   return (
     <article className="resource-card topic-card">
@@ -47,7 +51,12 @@ const TopicCard: React.FC<TopicCardProps> = ({ topic }) => {
       </div>
       <h3>{topic.title}</h3>
       <p>{topic.shortDescription}</p>
-      {topic.status === "partial" && topic.availableResourceCount ? (
+      {topic.status === "partial" && topic.mysteryLessonCount ? (
+        <p className="topic-card-meta">
+          {topic.availableLessonCount} {availableLessonLabel} available ·{" "}
+          {topic.mysteryLessonCount} {mysteryLessonLabel} coming
+        </p>
+      ) : topic.status === "partial" && topic.availableResourceCount ? (
         <p className="topic-card-meta">
           {topic.availableResourceCount} {availableResourceLabel} available ·
           More coming
