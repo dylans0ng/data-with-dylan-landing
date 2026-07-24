@@ -116,3 +116,50 @@ VITE_CONVERTKIT_SQL_TAG_ID=
 
 After the V4 route is verified in production, remove the `VITE_CONVERTKIT_*`
 fallback values from Vercel so the browser no longer receives Kit API config.
+
+## One-time account welcome email
+
+New accounts include an `account_welcome_email_version` metadata marker. After
+the account has an authenticated session, the browser calls:
+
+```txt
+/api/account-welcome
+```
+
+The route validates the Supabase access token, takes the recipient address from
+the authenticated user, and sends the account email through Resend. It does not
+use or change the separate Kit marketing opt-in.
+
+Apply the SQL migration in `supabase/migrations` before enabling delivery. The
+`account_email_deliveries` table is protected by RLS with no browser-accessible
+policies. It permanently records completed sends, while Resend's idempotency key
+protects retries during its 24-hour window. Explicit provider failures can retry
+on a later authenticated session; ambiguous timeouts remain pending for review
+instead of risking a duplicate email.
+
+Add these server-only values locally and in Vercel:
+
+```txt
+WELCOME_EMAIL_ENABLED=false
+WELCOME_EMAIL_CUTOVER_AT=
+RESEND_API_KEY=
+WELCOME_EMAIL_FROM=Data with Dylan <hello@verified-domain>
+WELCOME_EMAIL_REPLY_TO=hello@verified-domain
+PUBLIC_SITE_URL=
+```
+
+`WELCOME_EMAIL_CUTOVER_AT` must be an ISO timestamp. Accounts created before it
+are never sent this email, so set it to the production activation time rather
+than the code deployment time.
+
+Keep `WELCOME_EMAIL_ENABLED=false` until:
+
+1. The database migration has been applied.
+2. A domain or sending subdomain you own has been verified in Resend.
+3. The `WELCOME_EMAIL_FROM` domain exactly matches the verified domain.
+4. `PUBLIC_SITE_URL` is the production site origin.
+
+Resend's shared development sender can only be used for permitted test
+recipients. Once the production domain is verified, run a controlled new-account
+signup, confirm the email's HTML and plain-text versions, then enable delivery.
+Email delivery errors never block account creation or resource access.

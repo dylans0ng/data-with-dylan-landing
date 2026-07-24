@@ -27,6 +27,31 @@ function buildAuthRedirect(redirectTo: string): string {
   return callbackUrl.toString();
 }
 
+async function sendAccountWelcomeEmail(session: Session): Promise<void> {
+  if (
+    Number(session.user.user_metadata.account_welcome_email_version) !== 1
+  ) {
+    return;
+  }
+
+  const response = await fetch("/api/account-welcome", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${session.access_token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  const payload = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    console.warn(
+      "[Account welcome] Email delivery did not complete.",
+      JSON.stringify({ status: response.status, payload }, null, 2)
+    );
+  }
+}
+
 async function syncKitSubscriber(session: Session): Promise<void> {
   if (session.user.user_metadata.email_list_opt_in !== true) {
     return;
@@ -82,6 +107,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       setIsLoading(false);
 
       if (data.session) {
+        void sendAccountWelcomeEmail(data.session).catch(() => undefined);
         void syncKitSubscriber(data.session).catch(() => undefined);
       }
     });
@@ -91,6 +117,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         setSession(nextSession);
 
         if (nextSession) {
+          void sendAccountWelcomeEmail(nextSession).catch(() => undefined);
           void syncKitSubscriber(nextSession).catch(() => undefined);
         }
       }
@@ -138,6 +165,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         password,
         options: {
           data: {
+            account_welcome_email_version: 1,
             email_list_opt_in: emailListOptIn,
             email_list_source: "signup-page",
           },

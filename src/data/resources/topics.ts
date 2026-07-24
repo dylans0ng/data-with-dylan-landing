@@ -14,6 +14,7 @@ export const topics: Topic[] = [
     iconAsset: pythonLogo,
     shortDescription:
       "Variables, data types, loops, collections, file I/O, and Pandas basics—companion materials for the Python Fundamentals playlist.",
+    cardMetaText: "7 lessons available",
     overviewDescription:
       "Follow this 7-video beginner playlist from first syntax to real data work: variables and data types, conditional logic, for and while loops, lists vs. sets vs. tuples, dictionaries, file I/O, and converting a dictionary into a Pandas DataFrame. Each video pairs with cheat sheets and guided notes below so you can review quickly and practice as you go.",
     playlistUrl:
@@ -29,21 +30,22 @@ export const topics: Topic[] = [
     icon: "Pandas",
     iconAsset: pandasLogo,
     shortDescription:
-      "Start with loading files into Pandas. The next nine lessons are staying under wraps—for now.",
+      "Start by loading and exploring DataFrames in Pandas. Eight more lessons are coming.",
     overviewDescription:
-      "Begin this Pandas crash course with loading files into your local Python program for further analysis. Download the cheat sheet or work through the guided notes, then check back as nine lessons are revealed.",
-    playlistComingSoon: true,
+      "Begin this Pandas crash course by loading files into your local Python program and exploring DataFrames for further analysis. Download the cheat sheets or work through the guided notes, then check back as eight more lessons are revealed.",
+    playlistUrl:
+      "https://youtube.com/playlist?list=PLAzeSxOXvt7s&si=FZPUui-pO5K5HL-T",
     formats: ["cheat-sheets", "guided-notes"],
     lessonCount: 10,
-    availableLessonCount: 1,
-    mysteryLessonCount: 9,
-    comingSoonHeading: "Nine lessons are coming",
+    availableLessonCount: 2,
+    mysteryLessonCount: 8,
+    comingSoonHeading: "Eight lessons are coming",
     comingSoonDescription:
-      "Lesson 1 is available now. The remaining nine topics will stay under wraps until each new lesson is ready to be revealed.",
+      "Lessons 1 and 2 are available now. The remaining eight topics will stay under wraps until each new lesson is ready to be revealed.",
     formatIntroCopy:
-      "Both supplemental formats are available for Lesson 1 - pick the one that fits how you learn best.",
+      "Both supplemental formats are available for Lessons 1 and 2 - pick the one that fits how you learn best.",
     formatTeaserCopy:
-      "9 mystery lessons coming · New topics will be revealed as they’re published.",
+      "8 lessons coming · New topics will be revealed as they’re published.",
   },
   {
     slug: "sql-fundamentals",
@@ -80,6 +82,7 @@ export const topics: Topic[] = [
     iconAsset: openAiLogo,
     shortDescription:
       "Beginner-friendly companion resources for learning how to call AI models from Python, protect API keys, and build practical prompt-powered projects.",
+    cardMetaText: "1 lesson available · More coming",
     overviewDescription:
       "Beginner-friendly resources to help you make your first AI API calls in Python. Learn the foundations - from setting up your project and protecting API keys to writing better prompts and building simple AI-powered tools.",
     playlistUrl:

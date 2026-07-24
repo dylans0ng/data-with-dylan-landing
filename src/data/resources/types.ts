@@ -18,6 +18,7 @@ export interface Topic {
   iconAsset?: string;
   shortDescription: string;
   overviewDescription: string;
+  cardMetaText?: string;
   playlistUrl?: string;
   playlistComingSoon?: boolean;
   formats: ResourceFormat[];
