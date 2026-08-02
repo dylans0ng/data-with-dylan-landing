@@ -30,22 +30,22 @@ export const topics: Topic[] = [
     icon: "Pandas",
     iconAsset: pandasLogo,
     shortDescription:
-      "Start by loading and exploring DataFrames in Pandas. Eight more lessons are coming.",
+      "Start by loading, exploring, selecting, and filtering data with Pandas. Six more lessons are coming.",
     overviewDescription:
-      "Begin this Pandas crash course by loading files into your local Python program and exploring DataFrames for further analysis. Download the cheat sheets or work through the guided notes, then check back as eight more lessons are revealed.",
+      "Begin this Pandas crash course by loading files, exploring DataFrames, selecting rows and columns, and filtering data for further analysis. Download the cheat sheets or work through the guided notes, then check back as six more lessons are revealed.",
     playlistUrl:
       "https://youtube.com/playlist?list=PLAzeSxOXvt7s&si=FZPUui-pO5K5HL-T",
     formats: ["cheat-sheets", "guided-notes"],
     lessonCount: 10,
-    availableLessonCount: 2,
-    mysteryLessonCount: 8,
-    comingSoonHeading: "Eight lessons are coming",
+    availableLessonCount: 4,
+    mysteryLessonCount: 6,
+    comingSoonHeading: "Six lessons are coming",
     comingSoonDescription:
-      "Lessons 1 and 2 are available now. The remaining eight topics will stay under wraps until each new lesson is ready to be revealed.",
+      "Lessons 1 through 4 are available now. The remaining six topics will stay under wraps until each new lesson is ready to be revealed.",
     formatIntroCopy:
-      "Both supplemental formats are available for Lessons 1 and 2 - pick the one that fits how you learn best.",
+      "Both supplemental formats are available for Lessons 1 through 4 - pick the one that fits how you learn best.",
     formatTeaserCopy:
-      "8 lessons coming · New topics will be revealed as they’re published.",
+      "6 lessons coming · New topics will be revealed as they’re published.",
   },
   {
     slug: "sql-fundamentals",

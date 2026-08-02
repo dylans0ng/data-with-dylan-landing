@@ -1,9 +1,13 @@
 import type { LessonResource } from "./types";
 
+import filterDataCheatSheetPreview from "../../assets/resources/pandas-fundamentals-crash-course/previews/cheat-sheets/How_to_Filter_Data_in_Pandas_Cheat_Sheet.png";
 import exploreDataframesCheatSheetPreview from "../../assets/resources/pandas-fundamentals-crash-course/previews/cheat-sheets/How_to_Explore_Dataframes_Cheat_Sheet.png";
 import loadFilesCheatSheetPreview from "../../assets/resources/pandas-fundamentals-crash-course/previews/cheat-sheets/How_to_Load_Files_in_Pandas_Cheat_Sheet.png";
+import selectRowsAndColumnsCheatSheetPreview from "../../assets/resources/pandas-fundamentals-crash-course/previews/cheat-sheets/Selecting_Rows_and_Columns_in_Pandas_Cheat_Sheet.png";
+import filterDataGuidedNotesPreview from "../../assets/resources/pandas-fundamentals-crash-course/previews/guided-notes/How_to_Filter_Data_in_Pandas_Guided_Notes.png";
 import exploreDataframesGuidedNotesPreview from "../../assets/resources/pandas-fundamentals-crash-course/previews/guided-notes/How_to_Explore_Dataframes_Pandas_Guided_Notes.png";
 import loadFilesGuidedNotesPreview from "../../assets/resources/pandas-fundamentals-crash-course/previews/guided-notes/How_to_Load_Files_in_Pandas_Guided_Notes.png";
+import selectRowsAndColumnsGuidedNotesPreview from "../../assets/resources/pandas-fundamentals-crash-course/previews/guided-notes/Selecting_Rows_and_Columns_Guided_Notes.png";
 
 const TOPIC_SLUG = "pandas-fundamentals-crash-course";
 
@@ -21,6 +25,20 @@ const lessonMeta = [
     title: "How to Explore Dataframes",
     description:
       "Learn how to inspect a DataFrame's structure, preview rows, summarize numerical data, identify missing values, and profile categorical columns.",
+  },
+  {
+    lessonNumber: 3,
+    slug: "how-to-select-rows-and-columns",
+    title: "How to Select Rows and Columns",
+    description:
+      "Learn how to select columns and rows by label or position, compare Series and DataFrame outputs, slice with .loc[] and .iloc[], and introduce Boolean masking.",
+  },
+  {
+    lessonNumber: 4,
+    slug: "how-to-filter-data",
+    title: "How to Filter Data",
+    description:
+      "Learn how Boolean masks filter DataFrames, combine conditions with Pandas operators, reverse conditions, and save filtered results without changing the original data.",
   },
 ] as const;
 
@@ -70,6 +88,54 @@ const resourceMeta = {
         "Diagnostic and numerical summary exercises",
         "Missing-value checks and cleanup",
         "Categorical profiling, recap questions, and a practice challenge",
+      ],
+    },
+  },
+  "how-to-select-rows-and-columns": {
+    "cheat-sheets": {
+      sourceFileName: "Selecting_Rows_and_Columns_in_Pandas_Cheat_Sheet.pdf",
+      previewAsset: selectRowsAndColumnsCheatSheetPreview,
+      includedItems: [
+        "Single- and multiple-column selection",
+        "Series versus DataFrame return types",
+        "Label-based selection with .loc[]",
+        "Position-based selection with .iloc[]",
+        "Inclusive and exclusive slicing with Boolean masking",
+      ],
+    },
+    "guided-notes": {
+      sourceFileName: "Selecting_Rows_and_Columns_Guided_Notes.pdf",
+      previewAsset: selectRowsAndColumnsGuidedNotesPreview,
+      includedItems: [
+        "Column-selection and return-type exercises",
+        "Label-based .loc[] practice",
+        "Position-based .iloc[] practice",
+        "Row-and-column slicing comparisons",
+        "Boolean masking, recap questions, and a practice challenge",
+      ],
+    },
+  },
+  "how-to-filter-data": {
+    "cheat-sheets": {
+      sourceFileName: "How_to_Filter_Data_in_Pandas_Cheat_Sheet.pdf",
+      previewAsset: filterDataCheatSheetPreview,
+      includedItems: [
+        "Boolean masks and True/False row selection",
+        "Single-condition filtering",
+        "Combining filters with & and |",
+        "Reversing conditions with ~",
+        "Parentheses, saved results, and common mistakes",
+      ],
+    },
+    "guided-notes": {
+      sourceFileName: "How_to_Filter_Data_in_Pandas_Guided_Notes.pdf",
+      previewAsset: filterDataGuidedNotesPreview,
+      includedItems: [
+        "Boolean-masking foundations",
+        "Single- and multiple-condition filtering exercises",
+        "AND, OR, and reverse-condition practice",
+        "Saving and comparing filtered DataFrames",
+        "Syntax corrections, recap questions, and a practice challenge",
       ],
     },
   },
